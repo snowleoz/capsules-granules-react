@@ -1,0 +1,27 @@
+const config = {
+  /** 要打包的文件根目录 */
+  root: 'test',
+  /** 是否需要动态polyfill注入 */
+  // dynamicPolyfill: true
+  /** 是否启用babel对react的解析 */
+  react: true,
+  /** webpack config 自定义调整，会通过webpack.merge与预设webpack配置合并 */
+  config: webpackConfig => {
+    if (webpackConfig.mode === 'production') {
+      webpackConfig.output = {
+        ...webpackConfig.output,
+        library: {
+          name: 'capsule-particle-react',
+          type: 'umd',
+          export: 'default'
+        },
+        filename: '[name].js'
+      }
+    }
+    return webpackConfig
+  },
+  /** 自定义html模板路径或关闭html创建 */
+  html: true
+}
+
+module.exports = config

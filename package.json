@@ -1,0 +1,41 @@
+{
+	"name": "capsule-particle-react",
+	"version": "1.0.0",
+	"main": "index.js",
+	"repository": "https://github.com/zhangrui0517/capsule-particle-react.git",
+	"author": "zhangrui <393394595@qq.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/react": "^18.0.21",
+		"@types/react-dom": "^18.0.6",
+		"@typescript-eslint/eslint-plugin": "^5.38.1",
+		"@typescript-eslint/parser": "^5.38.1",
+		"capsule-pack": "^1.0.21",
+		"eslint": "^8.24.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-plugin-react": "^7.31.8",
+		"husky": "^8.0.1",
+		"lint-staged": "^13.0.3",
+		"prettier": "^2.7.1",
+		"typescript": "^4.8.4"
+	},
+	"scripts": {
+		"dev": "npx cpack dev",
+		"build": "npx cpack build",
+		"dev-server": "npx cpack dev-server",
+		"lint-staged": "lint-staged"
+	},
+	"lint-staged": {
+		"./src/**/*.*": [
+			"npx prettier --write",
+			"npx eslint --cache --fix"
+		]
+	},
+	"dependencies": {
+		"capsule-particle": "^1.0.8",
+		"lodash": "^4.17.21",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	}
+}
