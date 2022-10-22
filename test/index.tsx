@@ -1,13 +1,19 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useMemo } from 'react'
 import ReactDom from 'react-dom/client'
 import ParticleReact from '../src'
+
+const divCmpt: React.FC<any> = props => {
+  console.log('props: ', props)
+  return <div>{props.children}</div>
+}
 
 const App = () => {
   const register = useMemo(() => {
     return [
       {
         type: 'div',
-        component: 'div'
+        component: divCmpt
       }
     ]
   }, [])
@@ -20,25 +26,38 @@ const App = () => {
           type: 'div',
           children: [
             {
-              key: 'test2-child1'
+              key: 'test2-child1',
+              type: 'div',
+              props: {
+                children: 'test2-child1'
+              }
             },
             {
-              key: 'test2-child2'
+              key: 'test2-child2',
+              type: 'div',
+              props: {
+                children: 'test2-child2'
+              }
             }
-          ],
-          props: {
-            children: 'test2'
-          }
+          ]
         },
         {
           key: 'test3',
           type: 'div',
           children: [
             {
-              key: 'test3-child1'
+              key: 'test3-child1',
+              type: 'div',
+              props: {
+                children: 'test3-child1'
+              }
             },
             {
-              key: 'test3-child2'
+              key: 'test3-child2',
+              type: 'div',
+              props: {
+                children: 'test3-child2'
+              }
             }
           ],
           props: {
@@ -50,15 +69,20 @@ const App = () => {
           type: 'div',
           children: [
             {
-              key: 'test4-child1'
+              key: 'test4-child1',
+              type: 'div',
+              props: {
+                children: 'test4-child1'
+              }
             },
             {
-              key: 'test4-child2'
+              key: 'test4-child2',
+              type: 'div',
+              props: {
+                children: 'test4-child2'
+              }
             }
-          ],
-          props: {
-            children: 'test4'
-          }
+          ]
         }
       ],
       type: 'div'
