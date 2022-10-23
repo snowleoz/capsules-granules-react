@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import ReactDom from 'react-dom/client'
 import ParticleReact from '../src'
 
@@ -8,6 +7,7 @@ const divCmpt: React.FC<any> = props => {
 }
 
 const App = () => {
+  const particleRef = useRef(null)
   const register = useMemo(() => {
     return [
       {
@@ -87,7 +87,8 @@ const App = () => {
       type: 'div'
     }
   }, [])
-  return <ParticleReact config={config} register={register} />
+  console.log('particleRef: ', particleRef)
+  return <ParticleReact ref={particleRef} config={config} register={register} />
 }
 
 const container = document.getElementById('root')
