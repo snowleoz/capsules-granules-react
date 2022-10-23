@@ -4,7 +4,6 @@ import ReactDom from 'react-dom/client'
 import ParticleReact from '../src'
 
 const divCmpt: React.FC<any> = props => {
-  console.log('props: ', props)
   return <div>{props.children}</div>
 }
 
