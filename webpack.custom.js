@@ -12,8 +12,7 @@ const config = {
         ...webpackConfig.output,
         library: {
           name: 'capsule-particle-react',
-          type: 'umd',
-          export: 'default'
+          type: 'umd'
         },
         filename: '[name].js'
       }
