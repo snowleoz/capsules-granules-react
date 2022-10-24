@@ -1,5 +1,5 @@
 import { IOption } from 'capsule-particle'
-import React, { createElement, useState } from 'react'
+import React, { createElement, Dispatch } from 'react'
 
 export interface IProps {
   /** 组件描述 */
@@ -28,7 +28,8 @@ export type ReactElementsRef = {
   children: Record<string, Array<ReturnType<typeof createElement>>>
   element: Record<string, ReturnType<typeof createElement>>
 }
-export type ParticleStateRef = Record<string, ReturnType<typeof useState<any>>[1]>
+
+export type ParticleStateRef = Record<string, Dispatch<any>>
 
 export type ImperativeRef = {
   registered: IProps['register']
