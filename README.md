@@ -1,1 +1,1 @@
-# capsules-granules-react
+# capsule-particle-react
