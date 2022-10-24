@@ -1,5 +1,6 @@
 import { IOption } from 'capsule-particle'
 import React, { createElement, Dispatch } from 'react'
+import { ReducerPayload } from './components/Updater'
 
 export interface IProps {
   /** 组件描述 */
@@ -29,7 +30,7 @@ export type ReactElementsRef = {
   element: Record<string, ReturnType<typeof createElement>>
 }
 
-export type ParticleStateRef = Record<string, Dispatch<any>>
+export type particleDispatchRef = Record<string, Dispatch<ReducerPayload>>
 
 export type ImperativeRef = {
   registered: IProps['register']

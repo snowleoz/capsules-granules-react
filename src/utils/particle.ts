@@ -1,5 +1,5 @@
 import { createElement } from 'react'
-import { RegisterRef, ReactElementsRef, ParticleStateRef } from '../types'
+import { RegisterRef, ReactElementsRef, particleDispatchRef } from '../types'
 import { ParticleItem, PARTICLE_TOP } from 'capsule-particle'
 import { Updater } from '../components'
 
@@ -9,11 +9,11 @@ export type ControllerExtra = {
   // React节点树信息
   reactElementsRef: React.MutableRefObject<ReactElementsRef>
   // 组件状态机容器
-  particleStateRef: React.MutableRefObject<ParticleStateRef>
+  particleDispatchRef: React.MutableRefObject<particleDispatchRef>
 }
 
 export function particleController(particleItem: ParticleItem, controllerExtra: ControllerExtra) {
-  const { registerRef, reactElementsRef, particleStateRef } = controllerExtra
+  const { registerRef, reactElementsRef, particleDispatchRef } = controllerExtra
   const { type, key, props = {}, children, __particle } = particleItem
   const registered = registerRef.current.registerMap[type]
   if (!registered) {
@@ -23,29 +23,23 @@ export function particleController(particleItem: ParticleItem, controllerExtra: 
   const parent = __particle.parent !== PARTICLE_TOP && __particle.parent
   if (children?.length) {
     const reactChildren = (reactElementsRef.current.children[`${key}-children`] = [])
-    parent
-      ? reactElementsRef.current.children[`${parent}-children`]!.push(
-          createElement(Updater, {
-            particleCmpt: registered,
-            particleProps: props,
-            particleChildren: reactChildren,
-            particleKey: key,
-            particleStateRef
-          })
-        )
-      : (reactElementsRef.current.element[key] = createElement(registered, { ...props, key }, reactChildren))
+    const element = createElement(Updater, {
+      particleCmpt: registered,
+      particleProps: props,
+      particleChildren: reactChildren,
+      particleKey: key,
+      particleDispatchRef,
+      key: `${key}-updater`
+    })
+    parent ? reactElementsRef.current.children[`${parent}-children`]!.push(element) : (reactElementsRef.current.element[key] = element)
   } else {
-    parent
-      ? reactElementsRef.current.children[`${parent}-children`]!.push(
-          createElement(Updater, {
-            particleCmpt: registered,
-            particleProps: props,
-            particleKey: key,
-            particleStateRef
-          })
-        )
-      : (reactElementsRef.current.element[key] = createElement(registered, { ...props, key }, props.children))
+    const element = createElement(Updater, {
+      particleCmpt: registered,
+      particleProps: props,
+      particleKey: key,
+      particleDispatchRef,
+      key: `${key}-updater`
+    })
+    parent ? reactElementsRef.current.children[`${parent}-children`]!.push(element) : (reactElementsRef.current.element[key] = element)
   }
 }
-// createElement(registered, { ...props, key }, reactChildren)
-// createElement(registered, { ...props, key }, props.children)

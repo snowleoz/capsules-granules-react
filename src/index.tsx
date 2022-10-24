@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, forwardRef, useImperativeHandle, useCallback, useState, Fragment } from 'react'
+import React, { useEffect, useRef, forwardRef, useImperativeHandle, useCallback, useState, Fragment, useMemo } from 'react'
 import Particle, { IOption } from 'capsule-particle'
 import { particleController } from './utils'
-import { IProps, ReactCreateElements, ImperativeRef, RegisterRef, ReactElementsRef, ParticleStateRef } from './types'
+import { IProps, ReactCreateElements, ImperativeRef, RegisterRef, ReactElementsRef, particleDispatchRef } from './types'
 
 const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
   const { config, register = [], loading } = props
@@ -21,7 +21,7 @@ const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
     element: {}
   })
   // 组件状态机
-  const particleStateRef = useRef<ParticleStateRef>({})
+  const particleDispatchRef = useRef<particleDispatchRef>({})
   // 配置字段实例
   const particleRef = useRef<Particle | null>(null)
   useImperativeHandle(
@@ -36,7 +36,7 @@ const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
     particleController(particleItem, {
       registerRef,
       reactElementsRef,
-      particleStateRef
+      particleDispatchRef
     })
   }, [])
   // 解析配置，生成React树
@@ -47,10 +47,15 @@ const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
     })
     setElements(Object.values(reactElementsRef.current.element))
   }, [config])
-  if (elements) {
-    return React.createElement(Fragment, undefined, elements)
-  }
-  return <div>{loading || null}</div>
+
+  const render = useMemo(() => {
+    if (elements) {
+      return React.createElement(Fragment, undefined, elements)
+    }
+    return <div>{loading || null}</div>
+  }, [elements])
+
+  return render
 }
 
 export default forwardRef(ParticleReact)
