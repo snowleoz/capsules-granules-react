@@ -1,4 +1,4 @@
-import { IOption } from 'capsule-particle'
+import { Description } from 'capsule-particle'
 import React, { createElement, Dispatch } from 'react'
 import { ReducerPayload } from './components/Updater'
 
@@ -8,7 +8,7 @@ export interface IProps {
     type: string
     props?: Record<string, any>
     particleOption?: Record<string, any>
-  } & IOption['description']
+  } & Description
   /** 组件注册 */
   register: Array<{
     type: string
@@ -30,8 +30,13 @@ export type ReactElementsRef = {
   element: Record<string, ReturnType<typeof createElement>>
 }
 
+export type reactUpdateQuotoRef = Record<
+  string,
+  {
+    data: ReducerPayload
+  }
+>
+
 export type particleDispatchRef = Record<string, Dispatch<ReducerPayload>>
 
-export type ImperativeRef = {
-  registered: IProps['register']
-}
+export type ImperativeRef = RegisterRef

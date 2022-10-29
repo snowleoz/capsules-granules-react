@@ -20,15 +20,15 @@ export type StateType = {
 }
 
 export type ReducerPayload = {
-  props: IProps['particleProps']
-  children: IProps['particleChildren']
+  props?: IProps['particleProps']
+  children?: IProps['particleChildren']
 }
 
 function reducer(state: StateType, payload: ReducerPayload) {
   const { props, children } = payload
   return {
     stateParticleProps: props ? { ...state.stateParticleProps, ...props } : state.stateParticleProps,
-    stateParticleChildren: children || state.stateParticleChildren
+    stateParticleChildren: children?.slice() || state.stateParticleChildren
   }
 }
 

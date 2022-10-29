@@ -1,6 +1,6 @@
 import { createElement } from 'react'
-import { RegisterRef, ReactElementsRef, particleDispatchRef } from '../types'
-import { ParticleItem, PARTICLE_TOP } from 'capsule-particle'
+import { RegisterRef, ReactElementsRef, particleDispatchRef, reactUpdateQuotoRef } from '../types'
+import { ParticleItem, PARTICLE_TOP, PARTICLE_FLAG, CallbackStatusParam } from 'capsule-particle'
 import { Updater } from '../components'
 
 export type ControllerExtra = {
@@ -12,7 +12,11 @@ export type ControllerExtra = {
   particleDispatchRef: React.MutableRefObject<particleDispatchRef>
 }
 
-export function particleController(particleItem: ParticleItem, controllerExtra: ControllerExtra) {
+export type ControllerExtraWithOperation = ControllerExtra & {
+  reactUpdateQuotoRef: React.MutableRefObject<reactUpdateQuotoRef>
+}
+
+export function particleInitController(particleItem: ParticleItem, controllerExtra: ControllerExtra) {
   const { registerRef, reactElementsRef, particleDispatchRef } = controllerExtra
   const { type, key, props = {}, children, __particle } = particleItem
   const registered = registerRef.current.registerMap[type]
@@ -41,5 +45,21 @@ export function particleController(particleItem: ParticleItem, controllerExtra: 
       key: `${key}-updater`
     })
     parent ? reactElementsRef.current.children[`${parent}-children`]!.push(element) : (reactElementsRef.current.element[key] = element)
+  }
+}
+
+export function particleAppendcontroller(particleItem: ParticleItem, status: CallbackStatusParam, controllerExtra: ControllerExtraWithOperation) {
+  // 将新增配置更新到树中
+  particleInitController(particleItem, controllerExtra)
+  const { reactUpdateQuotoRef, reactElementsRef } = controllerExtra
+  const { children } = reactElementsRef.current
+  const { parent } = particleItem[PARTICLE_FLAG]
+  const { operationKey } = status
+  if (operationKey!.indexOf(parent) > -1 && !reactUpdateQuotoRef.current[parent]) {
+    reactUpdateQuotoRef.current[parent] = {
+      data: {
+        children: children[`${parent}-children`]
+      }
+    }
   }
 }

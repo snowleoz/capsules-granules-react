@@ -1,13 +1,13 @@
 import React, { useMemo, useRef } from 'react'
 import ReactDom from 'react-dom/client'
-import ParticleReact from '../src'
+import ParticleReact, { ImperativeRef } from '../src'
 
 const divCmpt: React.FC<any> = props => {
   return <div>{props.children}</div>
 }
 
 const App = () => {
-  const particleRef = useRef(null)
+  const particleRef = useRef<ImperativeRef>(null)
   const register = useMemo(() => {
     return [
       {
