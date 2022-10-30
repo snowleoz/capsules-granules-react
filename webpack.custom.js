@@ -1,6 +1,6 @@
 const config = {
   /** 要打包的文件根目录 */
-  root: 'test',
+  // root: 'test',
   /** 是否需要动态polyfill注入 */
   // dynamicPolyfill: true
   /** 是否启用babel对react的解析 */
@@ -10,17 +10,19 @@ const config = {
     if (webpackConfig.mode === 'production') {
       webpackConfig.output = {
         ...webpackConfig.output,
+        filename: '[name].js',
         library: {
           name: 'capsule-particle-react',
           type: 'umd'
-        },
-        filename: '[name].js'
+        }
       }
     }
+    webpackConfig.optimization.splitChunks = false
+    if (webpackConfig.mode === 'production') {
+      webpackConfig.plugins = webpackConfig.plugins.filter(plugin => plugin.constructor.name !== 'HtmlWebpackPlugin')
+    }
     return webpackConfig
-  },
-  /** 自定义html模板路径或关闭html创建 */
-  html: true
+  }
 }
 
 module.exports = config
