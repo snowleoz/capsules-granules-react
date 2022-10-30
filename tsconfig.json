@@ -4,7 +4,14 @@
     "target": "es2016",
     /* 支持jsx */
     "jsx": "react",
-    /* 构建产物的规范 */
-    "module": "ESNext"
-  }
+    "module": "ES2015",
+    "declaration": true,
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "noUnusedParameters": false
+  },
+  "include": ["./src"],
+  /* 不检查的目录 */
+  "exclude": ["node_modules", "./dist"]
 }
