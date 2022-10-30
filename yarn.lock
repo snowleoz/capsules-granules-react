@@ -2225,10 +2225,10 @@ capsule-pack@^1.0.21:
     webpack-merge "^5.8.0"
     webpackbar "^5.0.2"
 
-capsule-particle@^1.0.19:
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/capsule-particle/-/capsule-particle-1.0.19.tgz#0eda504a84dc098ca4badb35308ab24c28caac22"
-  integrity sha512-kj14qDqGf1O6O1l/RuOh9HX26iG1TCJsiy6tlTFCRpeRODN6czNuRtFSPgHA5lPyckGE3U87hu3C7ZFnNlWX2Q==
+capsule-particle@^1.0.24:
+  version "1.0.24"
+  resolved "https://registry.yarnpkg.com/capsule-particle/-/capsule-particle-1.0.24.tgz#80b63f161ba08556a44c42d09b79430422bf4602"
+  integrity sha512-GQKRJqhcxpI4yQGqgYYBifDm+c0u7rRQWqp7hpNWAc/RYThbDTBdZuv6GGdy7ExTb4hDtWNGCu3d+nIABlL2Sw==
   dependencies:
     lodash "^4.17.21"
 
