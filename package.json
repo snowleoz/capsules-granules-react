@@ -1,7 +1,7 @@
 {
 	"name": "capsule-particle-react",
 	"version": "1.0.0",
-	"main": "index.js",
+	"main": "./dist/index.js",
 	"repository": "https://github.com/zhangrui0517/capsule-particle-react.git",
 	"author": "zhangrui <393394595@qq.com>",
 	"license": "MIT",
@@ -24,7 +24,8 @@
 		"dev": "npx cpack dev",
 		"build": "npx cpack build",
 		"dev-server": "npx cpack dev-server",
-		"lint-staged": "lint-staged"
+		"lint-staged": "lint-staged",
+		"postbuild": "npx tsc"
 	},
 	"lint-staged": {
 		"./src/**/*.*": [
@@ -33,7 +34,9 @@
 		]
 	},
 	"dependencies": {
-		"capsule-particle": "^1.0.24",
+		"capsule-particle": "^1.0.24"
+	},
+	"peerDependencies": {
 		"lodash": "^4.17.21",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
