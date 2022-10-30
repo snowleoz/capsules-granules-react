@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, forwardRef, useImperativeHandle, useCallback, useState, Fragment, useMemo } from 'react'
 import Particle, { IOption } from 'capsule-particle'
-import { particleInitController, particleAppendcontroller, forFun } from './utils'
+import { controllers, forFun } from './utils'
 import { IProps, ReactCreateElements, ImperativeRef, RegisterRef, ReactElementsRef, particleDispatchRef, reactUpdateQuotoRef } from './types'
 
 const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
@@ -30,41 +30,40 @@ const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
   const particleDispatchRef = useRef<particleDispatchRef>({})
   /**  Particle 实例 */
   const particleRef = useRef<Particle | null>(null)
+  /** ReactParticle 的实例方法 */
+  const reactParticleRef = useRef<ImperativeRef>({
+    /** 组件注册列表 */
+    register: registerRef.current.register,
+    /** 组件注册映射表 */
+    registerMap: registerRef.current.registerMap,
+    /** 获取配置树 */
+    getParticle: () => {
+      return particleRef.current?.getParticle()
+    },
+    /** 获取指定配置或所有打平配置 */
+    getItem: (keys?: string[], dataType?: 'object' | 'array') => {
+      return particleRef.current?.getItem(keys, dataType)
+    },
+    /** 新增配置到指定节点中 */
+    append: (key: string, config: IProps['config'] | IProps['config'][], order?: number | undefined) => {
+      particleRef.current?.append(key, config, { order })
+    },
+    /** 删除指定的配置 */
+    remove: (keys: string[]) => {
+      particleRef.current?.remove(keys)
+    },
+    /** 设置指定的节点的配置 */
+    setItem: (key: string, data: Record<string, any>) => {
+      return particleRef.current?.setItem(key, data) as boolean
+    },
+    /** 替换指定节点 */
+    replace: (key: string, config: IProps['config']) => {
+      particleRef.current?.replace(key, config)
+    }
+  })
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      /** 组件注册列表 */
-      register: registerRef.current.register,
-      /** 组件注册映射表 */
-      registerMap: registerRef.current.registerMap,
-      /** 获取配置树 */
-      getParticle: () => {
-        return particleRef.current?.getParticle()
-      },
-      /** 获取指定配置或所有打平配置 */
-      getItem: (keys?: string[], dataType?: 'object' | 'array') => {
-        return particleRef.current?.getItem(keys, dataType)
-      },
-      /** 新增配置到指定节点中 */
-      append: (key: string, config: IProps['config'] | IProps['config'][], order?: number | undefined) => {
-        particleRef.current?.append(key, config, order)
-      },
-      /** 删除指定的配置 */
-      remove: (keys: string[]) => {
-        particleRef.current?.remove(keys)
-      },
-      /** 设置指定的节点的配置 */
-      setItem: (key: string, data: Record<string, any>) => {
-        return particleRef.current?.setItem(key, data)
-      },
-      /** 替换指定节点 */
-      replace: (key: string, config: IProps['config']) => {
-        particleRef.current?.replace(key, config)
-      }
-    }),
-    [config]
-  )
+  // 对外暴露的实例函数
+  useImperativeHandle(ref, () => reactParticleRef.current, [config])
 
   const updater = useCallback(() => {
     clearTimeout(reactUpdateTimer.current)
@@ -76,29 +75,20 @@ const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
           const { data } = quotoItem!
           particleDispatchRef.current[`${key}-updater`]!(data)
         })
+        reactUpdateQuotoRef.current = {}
       }, 8)
     }
   }, [])
 
   // 配置控制器，用于给配置标记、信息收集
   const controller = useCallback<Required<IOption>['controller']>((particleItem, status) => {
-    switch (status!.type) {
-      case 'init':
-        particleInitController(particleItem, {
-          registerRef,
-          reactElementsRef,
-          particleDispatchRef
-        })
-        break
-      case 'append':
-        particleAppendcontroller(particleItem, status!, {
-          registerRef,
-          reactElementsRef,
-          particleDispatchRef,
-          reactUpdateQuotoRef
-        })
-        break
-    }
+    controllers[status!.type](particleItem, status!, {
+      registerRef,
+      reactElementsRef,
+      particleDispatchRef,
+      reactUpdateQuotoRef,
+      particleRef
+    })
     updater()
   }, [])
 

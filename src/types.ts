@@ -39,4 +39,11 @@ export type reactUpdateQuotoRef = Record<
 
 export type particleDispatchRef = Record<string, Dispatch<ReducerPayload>>
 
-export type ImperativeRef = RegisterRef
+export type ImperativeRef = RegisterRef & {
+  getParticle: () => void
+  getItem: (keys?: string[], dataType?: 'object' | 'array') => void
+  append: (key: string, config: IProps['config'] | IProps['config'][], order?: number | undefined) => void
+  remove: (keys: string[]) => void
+  setItem: (key: string, data: Record<string, any>) => boolean
+  replace: (key: string, config: IProps['config']) => void
+}

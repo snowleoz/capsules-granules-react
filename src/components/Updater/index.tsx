@@ -26,9 +26,10 @@ export type ReducerPayload = {
 
 function reducer(state: StateType, payload: ReducerPayload) {
   const { props, children } = payload
+  const formatChildren = children ? (children === state.stateParticleChildren ? children.slice() : children) : state.stateParticleChildren
   return {
     stateParticleProps: props ? { ...state.stateParticleProps, ...props } : state.stateParticleProps,
-    stateParticleChildren: children?.slice() || state.stateParticleChildren
+    stateParticleChildren: formatChildren
   }
 }
 
