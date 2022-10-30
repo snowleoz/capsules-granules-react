@@ -87,7 +87,7 @@ const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
       reactElementsRef,
       particleDispatchRef,
       reactUpdateQuotoRef,
-      particleRef
+      reactParticleRef
     })
     updater()
   }, [])

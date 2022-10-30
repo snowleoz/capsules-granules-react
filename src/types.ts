@@ -1,4 +1,4 @@
-import { Description } from 'capsule-particle'
+import Particle, { Description } from 'capsule-particle'
 import React, { createElement, Dispatch } from 'react'
 import { ReducerPayload } from './components/Updater'
 
@@ -40,10 +40,10 @@ export type reactUpdateQuotoRef = Record<
 export type particleDispatchRef = Record<string, Dispatch<ReducerPayload>>
 
 export type ImperativeRef = RegisterRef & {
-  getParticle: () => void
-  getItem: (keys?: string[], dataType?: 'object' | 'array') => void
-  append: (key: string, config: IProps['config'] | IProps['config'][], order?: number | undefined) => void
-  remove: (keys: string[]) => void
-  setItem: (key: string, data: Record<string, any>) => boolean
-  replace: (key: string, config: IProps['config']) => void
+  getParticle: () => ReturnType<Particle['getParticle']> | undefined
+  getItem: (keys?: string[], dataType?: 'object' | 'array') => ReturnType<Particle['getItem']>
+  append: (key: string, config: IProps['config'] | IProps['config'][], order?: number | undefined) => ReturnType<Particle['append']>
+  remove: (keys: string[]) => ReturnType<Particle['remove']>
+  setItem: (key: string, data: Record<string, any>) => ReturnType<Particle['setItem']>
+  replace: (key: string, config: IProps['config']) => ReturnType<Particle['replace']>
 }
