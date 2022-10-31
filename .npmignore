@@ -1,0 +1,16 @@
+/src
+/tsconfig.json
+/test
+script
+node_modules
+.yarnrc
+yarn-error.log
+yarn.lock
+.eslintcache
+.husky
+.prettierrc
+.editorconfig
+.eslintrc.json
+.eslintignore
+webpack.custom.js
+.husky
