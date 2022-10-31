@@ -34,11 +34,13 @@
 		]
 	},
 	"dependencies": {
-		"capsule-particle": "^1.0.24"
+		"capsule-particle": "^1.0.27"
 	},
 	"peerDependencies": {
-		"lodash": "^4.17.21",
 		"react": ">=16.0.0",
 		"react-dom": ">=16.0.0"
+	},
+	"optionalDependencies": {
+		"lodash": "^4.17.21"
 	}
 }
