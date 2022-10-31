@@ -1,6 +1,6 @@
 {
 	"name": "capsule-particle-react",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"main": "./dist/index.js",
 	"repository": "https://github.com/zhangrui0517/capsule-particle-react.git",
 	"author": "zhangrui0517",
