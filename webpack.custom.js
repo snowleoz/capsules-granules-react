@@ -19,7 +19,8 @@ const config = {
     }
     webpackConfig.externals = {
       react: 'react',
-      'react-dom': 'react-dom'
+      'react-dom': 'react-dom',
+      lodash: 'lodash'
     }
     webpackConfig.optimization.splitChunks = false
     if (webpackConfig.mode === 'production') {
