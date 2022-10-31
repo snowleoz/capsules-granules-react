@@ -9,6 +9,8 @@ export interface IProps {
     props?: Record<string, any>
     particleOption?: Record<string, any>
   } & Description
+  /** 是否深拷贝描述 */
+  cloneDeepConfig?: boolean
   /** 组件注册 */
   register: Array<{
     type: string

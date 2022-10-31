@@ -4,7 +4,7 @@ import { controllers, forFun } from './utils'
 import { IProps, ReactCreateElements, ImperativeRef, RegisterRef, ReactElementsRef, particleDispatchRef, reactUpdateQuotoRef } from './types'
 
 const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
-  const { config, register = [], loading } = props
+  const { config, register = [], loading, cloneDeepConfig = false } = props
 
   /**  渲染组件 */
   const [elements, setElements] = useState<ReactCreateElements>(null)
@@ -96,7 +96,8 @@ const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
   useEffect(() => {
     particleRef.current = new Particle({
       description: config,
-      controller
+      controller,
+      cloneDeepDesc: cloneDeepConfig
     })
     setElements(Object.values(reactElementsRef.current.element))
   }, [config])
