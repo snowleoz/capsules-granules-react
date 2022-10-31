@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"main": "./dist/index.js",
 	"repository": "https://github.com/zhangrui0517/capsule-particle-react.git",
-	"author": "zhangrui <393394595@qq.com>",
+	"author": "zhangrui0517",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/react": "^18.0.21",
