@@ -17,6 +17,10 @@ const config = {
         }
       }
     }
+    webpackConfig.externals = {
+      react: 'react',
+      'react-dom': 'react-dom'
+    }
     webpackConfig.optimization.splitChunks = false
     if (webpackConfig.mode === 'production') {
       webpackConfig.plugins = webpackConfig.plugins.filter(plugin => plugin.constructor.name !== 'HtmlWebpackPlugin')
