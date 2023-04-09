@@ -17,3 +17,4 @@ webpack.custom.js
 .commitlintrc.json
 vite.config.ts
 vite.test.ts
+typings
