@@ -14,3 +14,6 @@ yarn.lock
 .eslintignore
 webpack.custom.js
 .husky
+.commitlintrc.json
+vite.config.ts
+vite.test.ts
