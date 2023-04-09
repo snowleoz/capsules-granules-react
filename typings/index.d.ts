@@ -1,6 +1,6 @@
 import Particle, { Description } from 'capsule-particle'
 import React, { createElement, Dispatch } from 'react'
-import { ReducerPayload } from './components/Updater'
+import { ReducerPayload } from '../src/components/Updater'
 
 export interface IProps {
   /** 组件描述 */
@@ -49,3 +49,6 @@ export type ImperativeRef = RegisterRef & {
   setItem: (key: string, data: Record<string, any>) => ReturnType<Particle['setItem']>
   replace: (key: string, config: IProps['config']) => ReturnType<Particle['replace']>
 }
+
+const ParticleReact: React.ForwardRefExoticComponent<IProps & React.RefAttributes<ImperativeRef>>
+export default ParticleReact

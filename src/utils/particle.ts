@@ -1,8 +1,8 @@
 import { createElement } from 'react'
-import { RegisterRef, ReactElementsRef, particleDispatchRef, reactUpdateQuotoRef, ImperativeRef, IProps as IParticleProps } from '../types'
+import { forEach } from 'lodash-es'
+import { RegisterRef, ReactElementsRef, particleDispatchRef, reactUpdateQuotoRef, ImperativeRef, IProps as IParticleProps } from '../../typings'
 import { ParticleItem, PARTICLE_TOP, CallbackStatusParam, FlatParticle, PARTICLE_FLAG } from 'capsule-particle'
 import { Updater } from '../components'
-import { forFun } from './common'
 
 export type ControllerExtra = {
   /** 组件注册列表 */
@@ -18,7 +18,7 @@ export type ControllerExtra = {
 }
 
 /** 初始化配置控制器 */
-export function particleInitController(particleItem: ParticleItem, status: CallbackStatusParam, controllerExtra: ControllerExtra) {
+export function particleInitController(particleItem: ParticleItem, _status: CallbackStatusParam, controllerExtra: ControllerExtra) {
   const { registerRef, reactElementsRef, particleDispatchRef, reactParticleRef } = controllerExtra
   const { type, key, props = {}, children, __particle } = particleItem
   const registered = registerRef.current.registerMap[type]
@@ -58,7 +58,7 @@ export function particleAppendController(particleItem: ParticleItem, status: Cal
   const { reactUpdateQuotoRef, reactElementsRef } = controllerExtra
   const { children } = reactElementsRef.current
   const { operationKey } = status
-  forFun(operationKey!, key => {
+  forEach(operationKey!, key => {
     if (!reactUpdateQuotoRef.current[key]) {
       reactUpdateQuotoRef.current[key] = {
         data: {
@@ -70,11 +70,11 @@ export function particleAppendController(particleItem: ParticleItem, status: Cal
 }
 
 /** 移除(remove)控制器 */
-export function particleRemoveController(particleItem: ParticleItem, status: CallbackStatusParam, controllerExtra: ControllerExtra) {
+export function particleRemoveController(_particleItem: ParticleItem, status: CallbackStatusParam, controllerExtra: ControllerExtra) {
   const { operationKey } = status
   const { reactUpdateQuotoRef, reactParticleRef, reactElementsRef } = controllerExtra
   const flatParticle = reactParticleRef.current!.getItem() as FlatParticle
-  forFun(operationKey!, key => {
+  forEach(operationKey!, key => {
     const currentParticle = flatParticle[key]
     if (currentParticle) {
       const currentParticleExtra = currentParticle[PARTICLE_FLAG]
@@ -143,7 +143,7 @@ export const controllers = {
 export function bindParticleFunToConfig(config: ParticleItem, reactParticleRef: ControllerExtra['reactParticleRef']) {
   const particleFuns = ['append', 'remove', 'replace', 'setItem']
   const reactParticle = reactParticleRef.current
-  forFun(particleFuns, funName => {
+  forEach(particleFuns, funName => {
     let descFun
     switch (funName) {
       case 'append':

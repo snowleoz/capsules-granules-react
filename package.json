@@ -1,46 +1,55 @@
 {
-	"name": "capsule-particle-react",
-	"version": "1.0.1",
-	"main": "./dist/index.js",
-	"repository": "https://github.com/zhangrui0517/capsule-particle-react.git",
-	"author": "zhangrui0517",
-	"license": "MIT",
-	"devDependencies": {
-		"@types/react": "^18.0.21",
-		"@types/react-dom": "^18.0.6",
-		"@typescript-eslint/eslint-plugin": "^5.38.1",
-		"@typescript-eslint/parser": "^5.38.1",
-		"capsule-pack": "^1.0.21",
-		"eslint": "^8.24.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-prettier": "^4.2.1",
-		"eslint-plugin-react": "^7.31.8",
-		"husky": "^8.0.1",
-		"lint-staged": "^13.0.3",
-		"prettier": "^2.7.1",
-		"typescript": "^4.8.4"
-	},
-	"scripts": {
-		"dev": "npx cpack dev",
-		"build": "npx cpack build",
-		"dev-server": "npx cpack dev-server",
-		"lint-staged": "lint-staged",
-		"postbuild": "npx tsc"
-	},
-	"lint-staged": {
-		"./src/**/*.*": [
-			"npx prettier --write",
-			"npx eslint --cache --fix"
-		]
-	},
-	"dependencies": {
-		"capsule-particle": "^1.0.27"
-	},
-	"peerDependencies": {
-		"react": ">=16.0.0",
-		"react-dom": ">=16.0.0"
-	},
-	"optionalDependencies": {
-		"lodash": "^4.17.21"
-	}
+  "name": "capsule-particle-react",
+  "version": "1.0.0",
+  "description": "$description$",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "repository": "https://github.com/zhangrui0517/capsule-particle-react.git",
+  "scripts": {
+		"prepublish": "pnpm build",
+    "prepare": "husky install",
+    "lint:script": "eslint --ext .js,.jsx,.ts,.tsx --fix --quiet ./",
+    "build": "vite build",
+    "dev": "vite -c ./vite.test.ts"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,tsx,ts}": [
+      "npm run lint:script"
+    ]
+  },
+  "keywords": [],
+  "author": "zhangrui0517",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^17.5.1",
+    "@commitlint/config-conventional": "^17.4.4",
+    "@types/lodash-es": "^4.17.7",
+    "@types/react": "^18.0.33",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "@vitejs/plugin-react": "^3.1.0",
+    "commitlint": "^17.5.1",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
+    "lodash-es": "^4.17.21",
+    "prettier": "^2.8.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.0.3",
+    "vite": "^4.2.1",
+    "vite-plugin-static-copy": "^0.13.1"
+  },
+  "peerDependencies": {
+    "lodash-es": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "capsule-particle": "^1.0.33"
+  }
 }

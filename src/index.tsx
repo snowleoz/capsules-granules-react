@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, forwardRef, useImperativeHandle, useCallback, useState, Fragment, useMemo } from 'react'
 import Particle, { IOption } from 'capsule-particle'
-import { controllers, forFun } from './utils'
-import { IProps, ReactCreateElements, ImperativeRef, RegisterRef, ReactElementsRef, particleDispatchRef, reactUpdateQuotoRef } from './types'
+import { controllers } from './utils'
+import { forEach } from 'lodash-es'
+import { IProps, ReactCreateElements, ImperativeRef, RegisterRef, ReactElementsRef, particleDispatchRef, reactUpdateQuotoRef } from '../typings'
 
 const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
   const { config, register = [], loading, cloneDeepConfig = false } = props
@@ -70,7 +71,7 @@ const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
     const quotoKeys = Object.keys(reactUpdateQuotoRef.current)
     if (quotoKeys.length) {
       reactUpdateTimer.current = setTimeout(() => {
-        forFun(quotoKeys, key => {
+        forEach(quotoKeys, key => {
           const quotoItem = reactUpdateQuotoRef.current[key]
           const { data } = quotoItem!
           particleDispatchRef.current[`${key}-updater`]!(data)
@@ -112,5 +113,4 @@ const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
   return render
 }
 
-export * from './types'
 export default forwardRef(ParticleReact)

@@ -1,5 +1,5 @@
 import React, { createElement, FC, useEffect, useReducer, useMemo } from 'react'
-import { ReactCreateElements, particleDispatchRef, ReactCreateElementCmpt } from '../../types'
+import { ReactCreateElements, particleDispatchRef, ReactCreateElementCmpt } from '../../../typings'
 
 export interface IProps {
   // 组件

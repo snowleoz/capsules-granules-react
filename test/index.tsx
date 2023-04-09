@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react'
 import ReactDom from 'react-dom/client'
-import ParticleReact, { ImperativeRef } from '../src'
+import ParticleReact, { ImperativeRef } from '../dist'
 
 const divCmpt: React.FC<any> = props => {
   return <div>{props.children}</div>
@@ -91,8 +91,5 @@ const App = () => {
   return <ParticleReact ref={particleRef} config={config} register={register} />
 }
 
-const container = document.getElementById('root')
-if (container) {
-  const root = ReactDom.createRoot(container)
-  root.render(<App />)
-}
+const root = ReactDom.createRoot(document.getElementById('root') || document.body)
+root.render(<App />)
