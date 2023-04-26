@@ -1,13 +1,11 @@
-import { useRef, useEffect, useCallback } from 'react'
+import { useRef, useCallback } from 'react'
 import { forEach } from 'lodash-es'
+
+export type UseCacheReturn = ReturnType<typeof useCache>
 
 /** 使用useRef缓存数据 */
 const useCache = <T extends Record<string, unknown>>(data: T) => {
 	const cacheData = useRef<T>(data)
-
-	useEffect(() => {
-		Object.assign(cacheData, data)
-	}, [data])
 
 	const setCache = useCallback((data: T | Record<string, unknown>) => {
 		Object.assign(cacheData.current, data)
