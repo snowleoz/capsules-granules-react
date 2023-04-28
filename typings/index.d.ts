@@ -10,7 +10,7 @@ export interface ParticleReactItem extends Description {
 
 export type RegistryItem = {
 	type: string
-	component: ReturnType<typeof createElement>
+	component: ReturnType<typeof createElement> | ((props: IProps) => JSX.Element)
 	defaultProps?: Record<string, any>
 	[key: string]: any
 }
