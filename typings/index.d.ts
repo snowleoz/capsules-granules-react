@@ -1,3 +1,4 @@
+import { createElement } from 'react'
 import type { Description } from 'capsule-particle'
 
 export interface ParticleReactItem extends Description {
@@ -9,7 +10,7 @@ export interface ParticleReactItem extends Description {
 
 export type RegistryItem = {
 	type: string
-	component: React.FC | React.ClassicComponent | string
+	component: ReturnType<typeof createElement>
 	defaultProps?: Record<string, any>
 	[key: string]: any
 }
