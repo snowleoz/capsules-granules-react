@@ -1,26 +1,17 @@
 import { useRef, useCallback } from 'react'
-import { forEach } from 'lodash-es'
 
-export type UseCacheReturn = ReturnType<typeof useCache>
+export type UseCacheReturn<T extends object> = ReturnType<typeof useCache<T>>
 
 /** 使用useRef缓存数据 */
-const useCache = <T extends Record<string, unknown>>(data: T) => {
+const useCache = <T extends object>(data: T) => {
 	const cacheData = useRef<T>(data)
 
-	const setCache = useCallback((data: T | Record<string, unknown>) => {
+	const setCache = useCallback((data: T | object) => {
 		Object.assign(cacheData.current, data)
 	}, [])
 
-	const getCache = useCallback((key: keyof T | (string & object)) => {
-		if (Array.isArray(key)) {
-			const result: Record<string, unknown> = {}
-			forEach(key, (keyItem) => {
-				result[keyItem] = cacheData.current[keyItem]
-			})
-			return result
-		} else {
-			return cacheData.current[key]
-		}
+	const getCache = useCallback(<K extends keyof T>(key: K): T[K] => {
+		return cacheData.current[key]
 	}, [])
 
 	return {
