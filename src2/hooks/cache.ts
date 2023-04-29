@@ -10,7 +10,7 @@ const useCache = <T extends object>(data: T) => {
 		Object.assign(cacheData.current, data)
 	}, [])
 
-	const getCache = useCallback(<K extends keyof T>(key: K): T[K] => {
+	const getCache = useCallback(<K extends keyof T>(key: K | (string & object)): T[K] => {
 		return cacheData.current[key]
 	}, [])
 
