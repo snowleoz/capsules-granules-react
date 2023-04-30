@@ -1,4 +1,3 @@
-import { createElement } from 'react'
 import type { Description } from 'capsule-particle'
 
 export interface ParticleReactItem extends Description {
@@ -10,8 +9,7 @@ export interface ParticleReactItem extends Description {
 
 export type RegistryItem = {
 	type: string
-	component: ReturnType<typeof createElement> | ((props: IProps) => JSX.Element)
-	defaultProps?: Record<string, any>
+	component: ReactElements | ((props: IProps) => JSX.Element)
 	[key: string]: any
 }
 
@@ -23,3 +21,6 @@ export interface IParticleReactProps {
 	/** 组件树加载时的渲染 */
 	feedback?: JSX.Element | string
 }
+
+/** React组件类型 */
+export type ReactElements = string | FunctionComponent<IProps> | ComponentClass<IProps, any>
