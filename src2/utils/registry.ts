@@ -11,21 +11,26 @@ export function checkRegistry(registryItem: RegistryItem) {
 
 export function initRegistry(registry: RegistryItem[]) {
 	if (registry) {
-		const registryMap: Record<string, RegistryItem> = {}
+		const registeredMap: Record<string, RegistryItem> = {}
+		const registeredCmptMap: Record<string, RegistryItem['component']> = {}
 		forEach(registry, (registryItem) => {
 			const isVaild = checkRegistry(registryItem)
 			if (isVaild) {
-				registryMap[registryItem.type] = registryItem
+				const type = registryItem.type
+				registeredMap[type] = registryItem
+				registeredCmptMap[type] = registryItem.component
 			} else {
 				/** 如果有type信息，则将组件替换为错误展示组件 */
 				if (registryItem.type) {
 					registryItem.component = Error
-					registryItem.defaultProps = registryItem
 				}
 				console.error('Incorrect registration information, please check, registry key is ', registryItem.type)
 			}
 		})
-		return registryMap
+		return {
+			registeredMap,
+			registeredCmptMap
+		}
 	} else {
 		console.error('Invalid registration information, please check registry props')
 	}
