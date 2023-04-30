@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { createRoot } from 'react-dom/client'
+import { description } from './data'
 
 import ParticleReact from '.'
 
@@ -10,14 +11,6 @@ const registry = [
 	}
 ]
 
-const configs = {
-	key: 'root',
-	type: 'div',
-	props: {
-		children: '123'
-	}
-}
-
 const App = () => {
 	const [, setUpdate] = useState(0)
 	const onButtonClick = useCallback(() => {
@@ -25,7 +18,7 @@ const App = () => {
 	}, [])
 	return (
 		<div>
-			<ParticleReact registry={registry} configs={configs} />
+			<ParticleReact registry={registry} configs={description} />
 			<input type={'button'} onClick={onButtonClick} value="Update" />
 		</div>
 	)
