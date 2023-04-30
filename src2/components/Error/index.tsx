@@ -1,14 +1,15 @@
 import React from 'react'
-import type { RegistryItem } from '@/typings'
+import type { ParticleReactItem } from '../../../typings'
 
 export interface IProps {
-	errorRegistry?: RegistryItem
+	/** 当前配置 */
+	$$config: ParticleReactItem
 }
 
 const Error = (props: IProps) => {
-	const { errorRegistry } = props
-	console.log('errorRegistry: ', errorRegistry)
-	return <div>注册的组件有误，请检查</div>
+	const { $$config } = props
+	const { key } = $$config
+	return <div key={`${key}-error`}>注册的组件有误，请检查</div>
 }
 
 export default Error
