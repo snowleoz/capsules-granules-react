@@ -1,19 +1,15 @@
-import React, { useMemo, useReducer, createElement } from 'react'
+import { useMemo, useReducer, createElement, ReactNode } from 'react'
 import { ParticleDataRef } from '../../'
 import { ReactElements, ParticleReactItem } from '../../../typings'
 
-type IAction = {
-	type?: string
-	payload: object
+type IState = {
+	/** 当前组件的子级 */
+	children?: ReactNode[]
+	/** 当前组件的属性 */
+	props: Record<string, any>
 }
 
-function reducer(state: object, action: IAction) {
-	const { type, payload } = action
-	switch (type) {
-		default:
-			return { ...state, ...payload }
-	}
-}
+type IPayload = Partial<IState>
 
 export interface IProps {
 	/** 当前配置 */
@@ -28,23 +24,39 @@ export interface IProps {
 	reactUpdaters: ParticleDataRef['reactUpdaters']
 }
 
+function reducer(state: IState, payload: IPayload) {
+	const { children, props } = payload
+	const newState = { ...state }
+	if (children) {
+		newState.children = children
+	}
+	if (props) {
+		Object.assign(newState, { props })
+	}
+	return newState
+}
+
 const Updater = (props: IProps) => {
 	const { render, renderProps, renderChildren, config, reactUpdaters } = props
+
+	/** 从当前组件配置中获取唯一标记 */
 	const { key } = config
-	console.log('key: ', key)
+
 	const [state, dispatch] = useReducer(reducer, {
-		...renderProps,
-		key,
-		$$config: config
-	})
+		props: renderProps,
+		children: renderChildren
+	}) as [IState, React.Dispatch<IPayload>]
 
 	useMemo(() => {
-		reactUpdaters[config.key] = dispatch
-	}, [])
+		/** 将组件的更新器存储到外部更新容器中 */
+		reactUpdaters[key] = dispatch
+	}, [key])
 
 	const renderCmpt = useMemo(() => {
-		return createElement(render, state, renderChildren)
-	}, [state, renderChildren])
+		const formatChildren = state.children?.length ? state.children : state.props?.children || null
+		return createElement(render, state.props, formatChildren)
+	}, [state.props, state.children])
+
 	return renderCmpt
 }
 
