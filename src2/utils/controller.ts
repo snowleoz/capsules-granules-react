@@ -4,7 +4,7 @@ import { PARTICLE_TOP } from 'capsule-particle'
 import type { ParticleDataRef } from '../'
 import type { UseCacheReturn } from '../hooks'
 import { Error } from '../components'
-import type { ParticleReactItem, ReactElements } from '../../typings'
+import type { ParticleReactItem } from '../../typings'
 
 export function controller(
 	configItem: ParticleReactItem,
@@ -25,7 +25,17 @@ export function controller(
 		}
 		const reactUpdaters = cacheDataRef.getCache('reactUpdaters')
 		/** 保存当前组件children的应用，方便之后将子级的信息推入 */
-		const reactTreeChildren: ReactElements[] = []
+		cacheDataRef.setCache(
+			{
+				reactTreeChildren: {
+					[key]: []
+				}
+			},
+			{
+				merge: true
+			}
+		)
+		const reactTreeChildren = cacheDataRef.getCache('reactTreeChildren')[key]
 		const ParticleCmpt = createElement(Updater, {
 			config: configItem,
 			render: Component,
@@ -44,9 +54,6 @@ export function controller(
 		/** 将数据存储到缓存中 */
 		cacheDataRef.setCache(
 			{
-				reactTreeChildren: {
-					[key]: reactTreeChildren
-				},
 				flatReactTree: {
 					[key]: ParticleCmpt
 				}
