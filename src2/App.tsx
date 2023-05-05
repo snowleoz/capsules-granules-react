@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { createRoot } from 'react-dom/client'
 import { description } from './data'
 
@@ -12,14 +12,13 @@ const registry = [
 ]
 
 const App = () => {
-	const [, setUpdate] = useState(0)
-	const onButtonClick = useCallback(() => {
-		setUpdate((update) => update++)
+	const particleReactRef = useRef()
+	useEffect(() => {
+		console.log('particleReactRef: ', particleReactRef)
 	}, [])
 	return (
 		<div>
-			<ParticleReact registry={registry} configs={description} />
-			<input type={'button'} onClick={onButtonClick} value="Update" />
+			<ParticleReact registry={registry} configs={description} ref={particleReactRef} />
 		</div>
 	)
 }

@@ -1,6 +1,6 @@
-import React, { useMemo, Fragment, useState } from 'react'
+import React, { useMemo, Fragment, useState, forwardRef } from 'react'
 import Particle from 'capsule-particle'
-import { useCache } from './hooks'
+import { useCache, useImperative } from './hooks'
 import { initRegistry, controller } from './utils'
 import type { IParticleReactProps, RegistryItem, ParticleReactItem, ReactElements } from '../typings'
 
@@ -21,7 +21,7 @@ export type ParticleDataRef = {
 	reactUpdaters: Record<string, React.Dispatch<any>>
 }
 
-const ParticleReact = (props: IParticleReactProps) => {
+const ParticleReact = (props: IParticleReactProps, ref: any) => {
 	const { registry, feedback, configs } = props
 
 	/** 组件刷新器 */
@@ -45,34 +45,33 @@ const ParticleReact = (props: IParticleReactProps) => {
 		reactUpdaters: {}
 	})
 
+	useImperative(ref, particleDataRef, [])
+
 	/**
 	 * 仅第一次渲染时接受registry，后续注册组件需通过api注册
 	 * 仅第一次渲染时接受configs，后续需通过api来对组件树进行增删改查
 	 */
 	useMemo(() => {
-		console.time('parse')
 		const registryInfo = initRegistry(registry)
 		if (registryInfo) {
 			const { registeredMap, registeredCmptMap } = registryInfo
-			particleDataRef.setCache({
-				registeredMap,
-				registeredCmptMap
+			/**
+			 * TODO Particle 增加泛型
+			 * 注意：此时particleDataRef还无法获取到注册信息，直接从参数传入
+			 * */
+			const particleEntity = new Particle(configs, (configItem) => {
+				controller(configItem as unknown as ParticleReactItem, registeredCmptMap, particleDataRef)
 			})
 			particleDataRef.setCache({
-				/**
-				 * TODO Particle 增加泛型
-				 * 需要将注册完成后才开始解析配置
-				 */
-				particleEntity: new Particle(configs, (configItem) => {
-					controller(configItem as unknown as ParticleReactItem, registeredCmptMap, particleDataRef)
-				})
+				registeredMap,
+				registeredCmptMap,
+				particleEntity
 			})
 			update((count) => ++count)
 		} else {
 			/** TODO: 组件使用Error Boundaries */
 			throw new Error('Missing valid component registration information')
 		}
-		console.timeEnd('parse')
 	}, [])
 
 	const ReactTree = useMemo(() => {
@@ -82,4 +81,4 @@ const ParticleReact = (props: IParticleReactProps) => {
 	return <Fragment>{ReactTree.length ? ReactTree : feedback || null}</Fragment>
 }
 
-export default ParticleReact
+export default forwardRef(ParticleReact)
