@@ -9,12 +9,14 @@ import type { ParticleReactItem } from '../../typings'
 export function controller(
 	configItem: ParticleReactItem,
 	registeredCmptMap: ParticleDataRef['registeredCmptMap'],
-	cacheDataRef: UseCacheReturn<ParticleDataRef>
+	particleDataRef: UseCacheReturn<ParticleDataRef>
 ) {
 	const { type, key, props = {}, __particle } = configItem
 	const { parent } = __particle
+	/** 必须存在组件类型和注册信息 */
 	if (type && registeredCmptMap) {
 		let Component = registeredCmptMap[type]
+		/** 找不到注册信息的，会转为错误报告组件 */
 		if (!Component) {
 			Component = Error
 			console.error(
@@ -23,9 +25,9 @@ export function controller(
 				'.Using the Error component instead'
 			)
 		}
-		const reactUpdaters = cacheDataRef.getCache('reactUpdaters')
+		const { reactUpdaters, reactTreeChildren, reactTree } = particleDataRef.getCache()
 		/** 保存当前组件children的应用，方便之后将子级的信息推入 */
-		cacheDataRef.setCache(
+		particleDataRef.setCache(
 			{
 				reactTreeChildren: {
 					[key]: []
@@ -35,24 +37,23 @@ export function controller(
 				merge: true
 			}
 		)
-		const reactTreeChildren = cacheDataRef.getCache('reactTreeChildren')[key]
+		const currentReactTreeChildren = reactTreeChildren[key]
 		const ParticleCmpt = createElement(Updater, {
 			config: configItem,
 			render: Component,
 			renderProps: props,
-			renderChildren: reactTreeChildren,
+			renderChildren: currentReactTreeChildren,
 			reactUpdaters,
 			key: `${key}-updater`
 		})
 		if (parent === PARTICLE_TOP) {
-			const reactTree = cacheDataRef.getCache('reactTree')
 			reactTree.push(ParticleCmpt)
 		} else {
-			const parentChildren = cacheDataRef.getCache('reactTreeChildren')[parent]!
+			const parentChildren = reactTreeChildren[parent]!
 			parentChildren.push(ParticleCmpt)
 		}
 		/** 将数据存储到缓存中 */
-		cacheDataRef.setCache(
+		particleDataRef.setCache(
 			{
 				flatReactTree: {
 					[key]: ParticleCmpt
