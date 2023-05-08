@@ -2,14 +2,13 @@ import { createElement } from 'react'
 import { Updater } from '../components'
 import { PARTICLE_TOP } from 'capsule-particle'
 import type { ParticleDataRef } from '../'
-import type { UseCacheReturn } from '../hooks'
 import { Error } from '../components'
 import type { ParticleReactItem } from '../../typings'
 
 export function controller(
 	configItem: ParticleReactItem,
 	registeredCmptMap: ParticleDataRef['registeredCmptMap'],
-	particleDataRef: UseCacheReturn<ParticleDataRef>
+	particleDataRef: React.MutableRefObject<ParticleDataRef>
 ) {
 	const { type, key, props = {}, __particle } = configItem
 	const { parent } = __particle
@@ -25,18 +24,10 @@ export function controller(
 				'.Using the Error component instead'
 			)
 		}
-		const { reactUpdaters, reactTreeChildren, reactTree } = particleDataRef.getCache()
+		const particleData = particleDataRef.current
 		/** 保存当前组件children的应用，方便之后将子级的信息推入 */
-		particleDataRef.setCache(
-			{
-				reactTreeChildren: {
-					[key]: []
-				}
-			},
-			{
-				merge: true
-			}
-		)
+		particleData.reactTreeChildren[key] = []
+		const { reactTreeChildren, reactUpdaters, reactTree } = particleData
 		const currentReactTreeChildren = reactTreeChildren[key]
 		const ParticleCmpt = createElement(Updater, {
 			config: configItem,
@@ -53,16 +44,7 @@ export function controller(
 			parentChildren.push(ParticleCmpt)
 		}
 		/** 将数据存储到缓存中 */
-		particleDataRef.setCache(
-			{
-				flatReactTree: {
-					[key]: ParticleCmpt
-				}
-			},
-			{
-				merge: true
-			}
-		)
+		particleData.flatReactTree[key] = ParticleCmpt
 	} else {
 		console.error('Missing component information, current component configuration is ', JSON.stringify(configItem))
 	}

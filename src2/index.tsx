@@ -1,6 +1,6 @@
-import React, { useMemo, Fragment, useState, forwardRef } from 'react'
-import Particle from 'capsule-particle'
-import { useCache, useImperative } from './hooks'
+import React, { useMemo, Fragment, useState, forwardRef, useRef } from 'react'
+import Particle, { PARTICLE_TOP } from 'capsule-particle'
+import { useImperative } from './hooks'
 import { initRegistry, controller } from './utils'
 import type { IParticleReactProps, RegistryItem, ParticleReactItem, ReactElements } from '../typings'
 
@@ -14,11 +14,22 @@ export type ParticleDataRef = {
 	/** 当前的组件树 */
 	reactTree: ReactElements[]
 	/** 当前打平的组件树 */
-	flatReactTree: Record<string, ReactElements>
+	flatReactTree: {
+		[key: string]: ReactElements
+	}
 	/** 每个树节点的children容器 */
-	reactTreeChildren: Record<string, ReactElements[]>
+	reactTreeChildren: {
+		[key: string]: ReactElements[]
+	}
 	/** 每个组件的更新器 */
-	reactUpdaters: Record<string, React.Dispatch<any>>
+	reactUpdaters: {
+		[key: string]: React.Dispatch<{
+			props?: Record<string, any>
+			children?: ReactElements[]
+		}>
+	} & {
+		[PARTICLE_TOP]?: () => void
+	}
 }
 
 const ParticleReact = (props: IParticleReactProps, ref: any) => {
@@ -28,7 +39,7 @@ const ParticleReact = (props: IParticleReactProps, ref: any) => {
 	const [updateCount, update] = useState(0)
 
 	/** 缓存数据 */
-	const particleDataRef = useCache<ParticleDataRef>({
+	const particleDataRef = useRef<ParticleDataRef>({
 		/** 组件注册信息映射表 */
 		registeredMap: undefined,
 		/** 组件注册表 */
@@ -62,11 +73,22 @@ const ParticleReact = (props: IParticleReactProps, ref: any) => {
 			const particleEntity = new Particle(configs, (configItem) => {
 				controller(configItem as unknown as ParticleReactItem, registeredCmptMap, particleDataRef)
 			})
-			particleDataRef.setCache({
+			particleDataRef.current = {
+				...particleDataRef.current,
 				registeredMap,
 				registeredCmptMap,
 				particleEntity
-			})
+			}
+			const { reactTree } = particleDataRef.current
+			/** 补充顶层元素 */
+			particleDataRef.current.flatReactTree[PARTICLE_TOP] = {
+				key: PARTICLE_TOP,
+				children: reactTree
+			}
+			particleDataRef.current.reactTreeChildren[PARTICLE_TOP] = reactTree
+			particleDataRef.current.reactUpdaters[PARTICLE_TOP] = () => {
+				update((count) => ++count)
+			}
 			update((count) => ++count)
 		} else {
 			/** TODO: 组件使用Error Boundaries */
@@ -75,7 +97,7 @@ const ParticleReact = (props: IParticleReactProps, ref: any) => {
 	}, [])
 
 	const ReactTree = useMemo(() => {
-		return particleDataRef.getCache('reactTree')
+		return particleDataRef.current.reactTree
 	}, [updateCount])
 
 	return <Fragment>{ReactTree.length ? ReactTree : feedback || null}</Fragment>
