@@ -3,6 +3,7 @@ import { forEach } from 'lodash-es'
 import { PARTICLE_TOP } from 'capsule-particle'
 import { ParticleDataRef } from '../'
 import type { ParticleReactItem, ReactElements } from '../../typings'
+import { isValidReactParticle, controller } from '../utils'
 
 export type ImperativeRef = object
 
@@ -11,7 +12,7 @@ const useImperative = (
 	particleDataRef: React.MutableRefObject<ParticleDataRef>,
 	deps = []
 ) => {
-	const { particleEntity, reactUpdaters, reactTreeChildren, flatReactTree } = particleDataRef.current
+	const { particleEntity, reactUpdaters, reactTreeChildren, flatReactTree, registeredCmptMap } = particleDataRef.current
 	useImperativeHandle(
 		ref,
 		() => {
@@ -106,9 +107,41 @@ const useImperative = (
 					}
 				},
 				/** 增加元素到指定节点 */
-				append(key: string, data: ParticleReactItem) {
-					console.log('append key: ', key)
-					console.log('append data: ', data)
+				append(
+					key: string,
+					data: ParticleReactItem,
+					options?: {
+						order?: number
+					}
+				) {
+					/** 检查数据合法性 */
+					if (isValidReactParticle(data)) {
+						const appendKey = data.key
+						const appendResult = particleEntity!.append(key, data, {
+							...options,
+							controller: (particleItem) => {
+								if (particleItem.key === appendKey) {
+									controller(particleItem as unknown as ParticleReactItem, registeredCmptMap, particleDataRef)
+								}
+							}
+						})
+						if (appendResult) {
+							const { __particle } = particleEntity!.getItem(appendKey)!
+							const { parent } = __particle
+							if (parent === PARTICLE_TOP) {
+								const updater = reactUpdaters[PARTICLE_TOP]!
+								updater()
+							} else {
+								const updater = reactUpdaters[parent]!
+								const newChildren = reactTreeChildren[parent]
+								updater({
+									children: newChildren?.slice(0) || []
+								})
+							}
+						}
+					} else {
+						console.error('Missing valid key or type, please check. data is ', JSON.stringify(data))
+					}
 				},
 				/** 替换指定的元素 */
 				replace(key: string, data: ParticleReactItem) {
