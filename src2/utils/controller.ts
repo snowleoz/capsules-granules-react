@@ -5,6 +5,14 @@ import type { ParticleDataRef } from '../'
 import { Error } from '../components'
 import type { ParticleReactItem } from '../../typings'
 
+export function isValidReactParticle(config: ParticleReactItem) {
+	if (config) {
+		const { type, key } = config
+		return type && key
+	}
+	return false
+}
+
 export function controller(
 	configItem: ParticleReactItem,
 	registeredCmptMap: ParticleDataRef['registeredCmptMap'],
@@ -13,7 +21,7 @@ export function controller(
 	const { type, key, props = {}, __particle } = configItem
 	const { parent } = __particle
 	/** 必须存在组件类型和注册信息 */
-	if (type && registeredCmptMap) {
+	if (isValidReactParticle(configItem) && registeredCmptMap) {
 		let Component = registeredCmptMap[type]
 		/** 找不到注册信息的，会转为错误报告组件 */
 		if (!Component) {
