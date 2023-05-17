@@ -56,6 +56,7 @@ const ParticleReact = (props: IParticleReactProps, ref: any) => {
 		reactUpdaters: {}
 	})
 
+	/** 对外暴露实例方法 */
 	useImperative(ref, particleDataRef, [])
 
 	/**
