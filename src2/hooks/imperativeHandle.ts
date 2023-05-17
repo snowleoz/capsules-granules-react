@@ -118,12 +118,7 @@ const useImperative = (
 					if (isValidReactParticle(data)) {
 						const appendKey = data.key
 						const appendResult = particleEntity!.append(key, data, {
-							...options,
-							controller: (particleItem) => {
-								if (particleItem.key === appendKey) {
-									controller(particleItem as unknown as ParticleReactItem, registeredCmptMap, particleDataRef)
-								}
-							}
+							...options
 						})
 						if (appendResult) {
 							const { __particle } = particleEntity!.getItem(appendKey)!
