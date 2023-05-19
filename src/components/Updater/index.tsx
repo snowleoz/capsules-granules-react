@@ -1,63 +1,63 @@
-import React, { createElement, FC, useEffect, useReducer, useMemo } from 'react'
-import { ReactCreateElements, particleDispatchRef, ReactCreateElementCmpt } from '../../../typings'
+import { useMemo, useReducer, createElement, ReactNode } from 'react'
+import { ParticleDataRef } from '../../'
+import { ReactElements, ParticleReactItem } from '../../../typings'
+
+type IState = {
+	/** 当前组件的子级 */
+	children?: ReactNode[]
+	/** 当前组件的属性 */
+	props: Record<string, any>
+}
+
+type IPayload = Partial<IState>
 
 export interface IProps {
-	// 组件
-	particleCmpt: ReactCreateElementCmpt
-	// 组件属性
-	particleProps: Record<string, any>
-	// 组件子级
-	particleChildren?: ReactCreateElements
-	// 组件KEY
-	particleKey: string
-	// 状态机容器
-	particleDispatchRef: React.MutableRefObject<particleDispatchRef>
+	/** 当前配置 */
+	config: ParticleReactItem
+	/** 当前渲染的组件 */
+	render: ReactElements
+	/** 当前组件的属性 */
+	renderProps: Record<string, unknown>
+	/** 当前组件的子级 */
+	renderChildren?: ReactElements[]
+	/** 更新器容器 */
+	reactUpdaters: ParticleDataRef['reactUpdaters']
 }
 
-export type StateType = {
-	stateParticleProps: IProps['particleProps']
-	stateParticleChildren: IProps['particleChildren']
-}
-
-export type ReducerPayload = {
-	props?: IProps['particleProps']
-	children?: IProps['particleChildren']
-}
-
-function reducer(state: StateType, payload: ReducerPayload) {
-	const { props, children } = payload
-	const formatChildren = children
-		? children === state.stateParticleChildren
-			? children.slice()
-			: children
-		: state.stateParticleChildren
-	return {
-		stateParticleProps: props ? { ...state.stateParticleProps, ...props } : state.stateParticleProps,
-		stateParticleChildren: formatChildren
+function reducer(state: IState, payload: IPayload) {
+	const { children, props } = payload
+	const newState = { ...state }
+	if (children) {
+		newState.children = children
 	}
+	if (props) {
+		Object.assign(newState, { props })
+	}
+	return newState
 }
 
-const Updater: FC<IProps> = (props) => {
-	const { particleProps = {}, particleChildren, particleKey, particleCmpt, particleDispatchRef } = props
+const Updater = (props: IProps) => {
+	const { render, renderProps, renderChildren, config, reactUpdaters } = props
 
-	const [state, dispatch] = useReducer<typeof reducer>(reducer, {
-		stateParticleProps: {
-			...particleProps,
-			key: particleKey
-		},
-		stateParticleChildren: particleChildren
-	})
+	/** 从当前组件配置中获取唯一标记 */
+	const { key } = config
 
-	useEffect(() => {
-		particleDispatchRef.current[`${particleKey}-updater`] = dispatch
-	}, [])
+	const [state, dispatch] = useReducer(reducer, {
+		props: renderProps,
+		children: renderChildren
+	}) as [IState, React.Dispatch<IPayload>]
 
-	const render = useMemo(() => {
-		const { stateParticleProps, stateParticleChildren } = state
-		return createElement(particleCmpt, stateParticleProps, stateParticleChildren || stateParticleProps.children)
-	}, [state.stateParticleChildren, state.stateParticleProps])
+	useMemo(() => {
+		/** 将组件的更新器存储到外部更新容器中 */
+		reactUpdaters[key] = dispatch
+	}, [key])
 
-	return render
+	const renderCmpt = useMemo(() => {
+		const formatChildren = state.children?.length ? state.children : state.props?.children || null
+		return createElement(render, state.props, formatChildren)
+	}, [state.props, state.children])
+
+	return renderCmpt
 }
 
 export default Updater

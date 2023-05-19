@@ -8,7 +8,7 @@ export interface IProps {
 
 const Error = (props: IProps) => {
 	const { $$config } = props
-	const { key } = $$config
+	const { key } = $$config || {}
 	return <div key={`${key}-error`}>注册的组件有误，请检查</div>
 }
 

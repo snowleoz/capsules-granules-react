@@ -9,7 +9,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.57.1
   '@typescript-eslint/parser': ^5.57.1
   '@vitejs/plugin-react': ^3.1.0
-  capsule-particle: ^1.0.36
+  capsule-particle: ^1.0.38
   commitlint: ^17.5.1
   eslint: ^8.37.0
   eslint-config-prettier: ^8.8.0
@@ -25,7 +25,7 @@ specifiers:
   vite-plugin-static-copy: ^0.13.1
 
 dependencies:
-  capsule-particle: 1.0.36_lodash-es@4.17.21
+  capsule-particle: 1.0.38_lodash-es@4.17.21
 
 devDependencies:
   '@commitlint/cli': 17.5.1
@@ -1163,8 +1163,8 @@ packages:
     resolution: {integrity: sha512-JmpktFppVSvyUN4gsLS0bShY2L9ZUslHLE72vgemBkS43JD2fOvKTKs+GtRwuxrtRGnwJFW0ye7kWRRlLJS9vQ==}
     dev: true
 
-  /capsule-particle/1.0.36_lodash-es@4.17.21:
-    resolution: {integrity: sha512-e/32nYYDbcy9DQf2PU0pttW3mXuANnC7VOkfYlsPguwVOS0SP3d7867KsFVZAHb7QqTVCQeCP1DtOrHVo8KM5g==}
+  /capsule-particle/1.0.38_lodash-es@4.17.21:
+    resolution: {integrity: sha512-a5iQn36CZQHMVUar5PIqlum6ej5v3gsPuBNF/ZYt3Ffg4suV5/jmEfd5N5mcMymCUmZBWvpMOhc+rFbkp1u5ow==}
     peerDependencies:
       lodash-es: ^4.17.21
     dependencies:

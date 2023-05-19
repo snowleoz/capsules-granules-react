@@ -3,5 +3,5 @@ import reactPlugin from '@vitejs/plugin-react'
 
 export default defineConfig({
 	plugins: [reactPlugin()],
-	root: './src2'
+	root: './test'
 })

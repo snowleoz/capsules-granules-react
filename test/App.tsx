@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { createRoot } from 'react-dom/client'
 import { description } from './data'
 
-import ParticleReact from '.'
+import ParticleReact from '../src'
 
 const registry = [
 	{

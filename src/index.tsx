@@ -1,133 +1,107 @@
-import React, {
-	useEffect,
-	useRef,
-	forwardRef,
-	useImperativeHandle,
-	useCallback,
-	useState,
-	Fragment,
-	useMemo
-} from 'react'
-import Particle, { IOption } from 'capsule-particle'
-import { controllers } from './utils'
-import { forEach } from 'lodash-es'
-import {
-	IProps,
-	ReactCreateElements,
-	ImperativeRef,
-	RegisterRef,
-	ReactElementsRef,
-	particleDispatchRef,
-	reactUpdateQuotoRef
-} from '../typings'
+import React, { useMemo, Fragment, useState, forwardRef, useRef } from 'react'
+import Particle, { PARTICLE_TOP } from 'capsule-particle'
+import { useImperative } from './hooks'
+import { initRegistry, controller } from './utils'
+import type { IParticleReactProps, RegistryItem, ParticleReactItem, ReactElements } from '../typings'
 
-const ParticleReact = (props: IProps, ref: React.Ref<ImperativeRef>) => {
-	const { config, register = [], loading, cloneDeepConfig = false } = props
+export type ParticleDataRef = {
+	/** 组件注册信息映射表 */
+	registeredMap?: Record<string, RegistryItem>
+	/** 组件注册表 */
+	registeredCmptMap?: Record<string, RegistryItem['component']>
+	/** 对象树实例 */
+	particleEntity?: Particle
+	/** 当前的组件树 */
+	reactTree: ReactElements[]
+	/** 当前打平的组件树 */
+	flatReactTree: {
+		[key: string]: ReactElements
+	}
+	/** 每个树节点的children容器 */
+	reactTreeChildren: {
+		[key: string]: ReactElements[]
+	}
+	/** 每个组件的更新器 */
+	reactUpdaters: {
+		[key: string]: React.Dispatch<{
+			props?: Record<string, any>
+			children?: ReactElements[]
+		}>
+	} & {
+		[PARTICLE_TOP]?: () => void
+	}
+}
 
-	/**  渲染组件 */
-	const [elements, setElements] = useState<ReactCreateElements>(null)
+const ParticleReact = (props: IParticleReactProps, ref: any) => {
+	const { registry, feedback, configs } = props
 
-	/**  注册列表 */
-	const registerRef = useRef<RegisterRef>({
-		register: register,
-		registerMap: register.reduce((acc, cur) => {
-			acc[cur.type] = cur.component
-			return acc
-		}, {} as RegisterRef['registerMap'])
-	})
-	/**  react 组件渲染树 */
-	const reactElementsRef = useRef<ReactElementsRef>({
-		children: {},
-		element: {}
-	})
-	/**  react 更新队列 */
-	const reactUpdateQuotoRef = useRef<reactUpdateQuotoRef>({})
-	/** react 更新定时器 */
-	const reactUpdateTimer = useRef<any>()
-	/**  组件状态机，用于传递到更新层收集更新器（dispatch） */
-	const particleDispatchRef = useRef<particleDispatchRef>({})
-	/**  Particle 实例 */
-	const particleRef = useRef<Particle | null>(null)
-	/** ReactParticle 的实例方法 */
-	const reactParticleRef = useRef<ImperativeRef>({
-		/** 组件注册列表 */
-		register: registerRef.current.register,
-		/** 组件注册映射表 */
-		registerMap: registerRef.current.registerMap,
-		/** 获取配置树 */
-		getParticle: () => {
-			return particleRef.current?.getParticle()
-		},
-		/** 获取指定配置或所有打平配置 */
-		getItem: (keys?: string[], dataType?: 'object' | 'array') => {
-			return particleRef.current?.getItem(keys, dataType)
-		},
-		/** 新增配置到指定节点中 */
-		append: (key: string, config: IProps['config'] | IProps['config'][], order?: number | undefined) => {
-			particleRef.current?.append(key, config, { order })
-		},
-		/** 删除指定的配置 */
-		remove: (keys: string[]) => {
-			particleRef.current?.remove(keys)
-		},
-		/** 设置指定的节点的配置 */
-		setItem: (key: string, data: Record<string, any>) => {
-			return particleRef.current?.setItem(key, data) as boolean
-		},
-		/** 替换指定节点 */
-		replace: (key: string, config: IProps['config']) => {
-			particleRef.current?.replace(key, config)
-		}
+	/** 组件刷新器 */
+	const [updateCount, update] = useState(0)
+
+	/** 缓存数据 */
+	const particleDataRef = useRef<ParticleDataRef>({
+		/** 组件注册信息映射表 */
+		registeredMap: undefined,
+		/** 组件注册表 */
+		registeredCmptMap: undefined,
+		/** 对象树实例 */
+		particleEntity: undefined,
+		/** 当前的组件树 */
+		reactTree: [],
+		/** 当前打平的组件树 */
+		flatReactTree: {},
+		/** 每个树节点的children容器 */
+		reactTreeChildren: {},
+		/** 每个组件的更新器 */
+		reactUpdaters: {}
 	})
 
-	// 对外暴露的实例函数
-	useImperativeHandle(ref, () => reactParticleRef.current, [config])
+	/** 对外暴露实例方法 */
+	useImperative(ref, particleDataRef, [])
 
-	const updater = useCallback(() => {
-		clearTimeout(reactUpdateTimer.current)
-		const quotoKeys = Object.keys(reactUpdateQuotoRef.current)
-		if (quotoKeys.length) {
-			reactUpdateTimer.current = setTimeout(() => {
-				forEach(quotoKeys, (key) => {
-					const quotoItem = reactUpdateQuotoRef.current[key]
-					const { data } = quotoItem!
-					particleDispatchRef.current[`${key}-updater`]!(data)
-				})
-				reactUpdateQuotoRef.current = {}
-			}, 8)
+	/**
+	 * 仅第一次渲染时接受registry，后续注册组件需通过api注册
+	 * 仅第一次渲染时接受configs，后续需通过api来对组件树进行增删改查
+	 */
+	useMemo(() => {
+		const registryInfo = initRegistry(registry)
+		if (registryInfo) {
+			const { registeredMap, registeredCmptMap } = registryInfo
+			/**
+			 * TODO Particle 增加泛型
+			 * 注意：此时particleDataRef还无法获取到注册信息，直接从参数传入
+			 * */
+			const particleEntity = new Particle(configs, (configItem) => {
+				controller(configItem as unknown as ParticleReactItem, registeredCmptMap, particleDataRef)
+			})
+			particleDataRef.current = {
+				...particleDataRef.current,
+				registeredMap,
+				registeredCmptMap,
+				particleEntity
+			}
+			const { reactTree } = particleDataRef.current
+			/** 补充顶层元素 */
+			particleDataRef.current.flatReactTree[PARTICLE_TOP] = {
+				key: PARTICLE_TOP,
+				children: reactTree
+			}
+			particleDataRef.current.reactTreeChildren[PARTICLE_TOP] = reactTree
+			particleDataRef.current.reactUpdaters[PARTICLE_TOP] = () => {
+				update((count) => ++count)
+			}
+			update((count) => ++count)
+		} else {
+			/** TODO: 组件使用Error Boundaries */
+			throw new Error('Missing valid component registration information')
 		}
 	}, [])
 
-	// 配置控制器，用于给配置标记、信息收集
-	const controller = useCallback<Required<IOption>['controller']>((particleItem, status) => {
-		controllers[status!.type](particleItem, status!, {
-			registerRef,
-			reactElementsRef,
-			particleDispatchRef,
-			reactUpdateQuotoRef,
-			reactParticleRef
-		})
-		updater()
-	}, [])
+	const ReactTree = useMemo(() => {
+		return particleDataRef.current.reactTree
+	}, [updateCount])
 
-	// 解析配置，生成React树
-	useEffect(() => {
-		particleRef.current = new Particle({
-			description: config,
-			controller,
-			cloneDeepDesc: cloneDeepConfig
-		})
-		setElements(Object.values(reactElementsRef.current.element))
-	}, [config])
-
-	const render = useMemo(() => {
-		if (elements) {
-			return React.createElement(Fragment, undefined, elements)
-		}
-		return <div>{loading || null}</div>
-	}, [elements])
-
-	return render
+	return <Fragment>{ReactTree.length ? ReactTree : feedback || null}</Fragment>
 }
 
 export default forwardRef(ParticleReact)

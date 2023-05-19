@@ -1,4 +1,6 @@
-import Updater from './Updater'
-import type { IProps as IUpdaterProps } from './Updater'
+import Error from './Error'
+import type { IProps as IErrorProps } from './Error'
 
-export { Updater, IUpdaterProps }
+import Updater from './Updater'
+
+export { Error, IErrorProps, Updater }
