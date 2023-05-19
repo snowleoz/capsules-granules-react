@@ -16,8 +16,13 @@ export function isValidReactParticle(config: ParticleReactItem) {
 export function controller(
 	configItem: ParticleReactItem,
 	registeredCmptMap: ParticleDataRef['registeredCmptMap'],
-	particleDataRef: React.MutableRefObject<ParticleDataRef>
+	particleDataRef: React.MutableRefObject<ParticleDataRef>,
+	options?: {
+		order?: number
+		replace?: boolean
+	}
 ) {
+	const { order, replace } = options || {}
 	const { type, key, props = {}, __particle } = configItem
 	const { parent } = __particle
 	/** 必须存在组件类型和注册信息 */
@@ -46,10 +51,12 @@ export function controller(
 			key: `${key}-updater`
 		})
 		if (parent === PARTICLE_TOP) {
-			reactTree.push(ParticleCmpt)
+			order !== undefined ? reactTree.splice(order, replace ? 1 : 0, ParticleCmpt) : reactTree.push(ParticleCmpt)
 		} else {
 			const parentChildren = reactTreeChildren[parent]!
-			parentChildren.push(ParticleCmpt)
+			order !== undefined
+				? parentChildren.splice(order, replace ? 1 : 0, ParticleCmpt)
+				: parentChildren.push(ParticleCmpt)
 		}
 		/** 将数据存储到缓存中 */
 		particleData.flatReactTree[key] = ParticleCmpt

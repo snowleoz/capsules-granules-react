@@ -1,6 +1,6 @@
 import { useImperativeHandle, Ref } from 'react'
 import { forEach } from 'lodash-es'
-import { PARTICLE_TOP } from 'capsule-particle'
+import { PARTICLE_TOP, Controller } from 'capsule-particle'
 import { ParticleDataRef } from '../'
 import type { ParticleReactItem, ReactElements } from '../../typings'
 import { isValidReactParticle, controller } from '../utils'
@@ -112,6 +112,7 @@ const useImperative = (
 					data: ParticleReactItem,
 					options?: {
 						order?: number
+						controller?: Controller
 					}
 				) {
 					/** 检查数据合法性 */
@@ -140,8 +141,42 @@ const useImperative = (
 				},
 				/** 替换指定的元素 */
 				replace(key: string, data: ParticleReactItem) {
-					console.log('replace key: ', key)
-					console.log('replace data: ', data)
+					const replaceItem = particleEntity!.getItem(key)
+					if (isValidReactParticle(data) && replaceItem) {
+						const {
+							__particle: { index, parent }
+						} = replaceItem
+						const replaceResult = particleEntity!.replace(key, data, {
+							controller(particleItem) {
+								controller(particleItem as unknown as ParticleReactItem, registeredCmptMap, particleDataRef, {
+									order: index,
+									replace: true
+								})
+							}
+						})
+						if (replaceResult) {
+							const { removeInfos } = replaceResult
+							if (parent === PARTICLE_TOP) {
+								const updater = reactUpdaters[PARTICLE_TOP]!
+								updater()
+							} else {
+								const updater = reactUpdaters[parent]!
+								const newChildren = reactTreeChildren[parent]
+								updater({
+									children: newChildren?.slice(0) || []
+								})
+							}
+							forEach(removeInfos, (removeItem) => {
+								const { removeKeys } = removeItem
+								forEach(removeKeys, (removeKey) => {
+									delete flatReactTree[removeKey]
+									delete reactTreeChildren[removeKey]
+									delete reactUpdaters[removeKey]
+								})
+							})
+						}
+						console.log('particleDataRef: ', particleDataRef)
+					}
 				}
 			}
 		},
