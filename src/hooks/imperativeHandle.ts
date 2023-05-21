@@ -1,14 +1,11 @@
 import { useImperativeHandle, Ref } from 'react'
 import { forEach } from 'lodash-es'
-import { PARTICLE_TOP, Controller } from 'capsule-particle'
-import { ParticleDataRef } from '../'
-import type { ParticleReactItem, ReactElements } from '../../typings'
+import { PARTICLE_TOP, Controller, ParticleItemPlus } from 'capsule-particle'
+import type { ParticleReactItem, ReactCreateElementReturn, ReactParticleRef, ParticleDataRef } from '../../typings'
 import { isValidReactParticle, controller } from '../utils'
 
-export type ImperativeRef = object
-
 const useImperative = (
-	ref: Ref<ImperativeRef>,
+	ref: Ref<ReactParticleRef>,
 	particleDataRef: React.MutableRefObject<ParticleDataRef>,
 	deps = []
 ) => {
@@ -24,7 +21,6 @@ const useImperative = (
 						clone?: boolean
 					}
 				) => {
-					/** TODO capsule-particle 增加泛型控制，此处的返回值类型才正确 */
 					return particleEntity!.getItem(keys, options)
 				},
 				/** 设置指定的的元素 */
@@ -63,7 +59,7 @@ const useImperative = (
 				/** 移除指定的元素 */
 				remove(keys: string | string[]) {
 					/** 待过滤无效节点的children容器 */
-					const waitToFilterChildren: ReactElements[][] = []
+					const waitToFilterChildren: ReactCreateElementReturn[][] = []
 					const waitToUpdateKeys: string[] = []
 					let updateRoot = false
 					particleEntity!.remove(keys, (removeInfo) => {
@@ -112,7 +108,7 @@ const useImperative = (
 					data: ParticleReactItem,
 					options?: {
 						order?: number
-						controller?: Controller
+						controller?: Controller<ParticleReactItem>
 					}
 				) {
 					/** 检查数据合法性 */
@@ -122,8 +118,8 @@ const useImperative = (
 							...options
 						})
 						if (appendResult) {
-							const { __particle } = particleEntity!.getItem(appendKey)!
-							const { parent } = __particle
+							const { __particle__ } = particleEntity!.getItem(appendKey) as ParticleItemPlus<ParticleReactItem>
+							const { parent } = __particle__
 							if (parent === PARTICLE_TOP) {
 								const updater = reactUpdaters[PARTICLE_TOP]!
 								updater()
@@ -141,14 +137,14 @@ const useImperative = (
 				},
 				/** 替换指定的元素 */
 				replace(key: string, data: ParticleReactItem) {
-					const replaceItem = particleEntity!.getItem(key)
+					const replaceItem = particleEntity!.getItem(key) as ParticleItemPlus<ParticleReactItem>
 					if (isValidReactParticle(data) && replaceItem) {
 						const {
-							__particle: { index, parent }
-						} = replaceItem
+							__particle__: { index, parent }
+						} = replaceItem!
 						const replaceResult = particleEntity!.replace(key, data, {
 							controller(particleItem) {
-								controller(particleItem as unknown as ParticleReactItem, registeredCmptMap, particleDataRef, {
+								controller(particleItem, registeredCmptMap, particleDataRef, {
 									order: index,
 									replace: true
 								})
@@ -175,7 +171,6 @@ const useImperative = (
 								})
 							})
 						}
-						console.log('particleDataRef: ', particleDataRef)
 					}
 				}
 			}

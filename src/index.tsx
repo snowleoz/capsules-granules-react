@@ -1,38 +1,10 @@
-import React, { useMemo, Fragment, useState, forwardRef, useRef } from 'react'
+import React, { useMemo, Fragment, useState, forwardRef, useRef, Ref } from 'react'
 import Particle, { PARTICLE_TOP } from 'capsule-particle'
 import { useImperative } from './hooks'
 import { initRegistry, controller } from './utils'
-import type { IParticleReactProps, RegistryItem, ParticleReactItem, ReactElements } from '../typings'
+import type { IParticleReactProps, ParticleReactItem, ParticleDataRef, ReactParticleRef } from '../typings'
 
-export type ParticleDataRef = {
-	/** 组件注册信息映射表 */
-	registeredMap?: Record<string, RegistryItem>
-	/** 组件注册表 */
-	registeredCmptMap?: Record<string, RegistryItem['component']>
-	/** 对象树实例 */
-	particleEntity?: Particle
-	/** 当前的组件树 */
-	reactTree: ReactElements[]
-	/** 当前打平的组件树 */
-	flatReactTree: {
-		[key: string]: ReactElements
-	}
-	/** 每个树节点的children容器 */
-	reactTreeChildren: {
-		[key: string]: ReactElements[]
-	}
-	/** 每个组件的更新器 */
-	reactUpdaters: {
-		[key: string]: React.Dispatch<{
-			props?: Record<string, any>
-			children?: ReactElements[]
-		}>
-	} & {
-		[PARTICLE_TOP]?: () => void
-	}
-}
-
-const ParticleReact = (props: IParticleReactProps, ref: any) => {
+const ParticleReact = (props: IParticleReactProps, ref: Ref<ReactParticleRef>) => {
 	const { registry, feedback, configs } = props
 
 	/** 组件刷新器 */
@@ -68,11 +40,10 @@ const ParticleReact = (props: IParticleReactProps, ref: any) => {
 		if (registryInfo) {
 			const { registeredMap, registeredCmptMap } = registryInfo
 			/**
-			 * TODO Particle 增加泛型
 			 * 注意：此时particleDataRef还无法获取到注册信息，直接从参数传入
 			 * */
-			const particleEntity = new Particle(configs, (configItem) => {
-				controller(configItem as unknown as ParticleReactItem, registeredCmptMap, particleDataRef)
+			const particleEntity = new Particle<ParticleReactItem>(configs, (configItem) => {
+				controller(configItem, registeredCmptMap, particleDataRef)
 			})
 			particleDataRef.current = {
 				...particleDataRef.current,
@@ -82,10 +53,7 @@ const ParticleReact = (props: IParticleReactProps, ref: any) => {
 			}
 			const { reactTree } = particleDataRef.current
 			/** 补充顶层元素 */
-			particleDataRef.current.flatReactTree[PARTICLE_TOP] = {
-				key: PARTICLE_TOP,
-				children: reactTree
-			}
+			particleDataRef.current.flatReactTree[PARTICLE_TOP] = reactTree
 			particleDataRef.current.reactTreeChildren[PARTICLE_TOP] = reactTree
 			particleDataRef.current.reactUpdaters[PARTICLE_TOP] = () => {
 				update((count) => ++count)

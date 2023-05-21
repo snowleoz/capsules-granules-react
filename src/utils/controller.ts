@@ -1,9 +1,8 @@
 import { createElement } from 'react'
 import { Updater } from '../components'
 import { PARTICLE_TOP } from 'capsule-particle'
-import type { ParticleDataRef } from '../'
 import { Error } from '../components'
-import type { ParticleReactItem } from '../../typings'
+import type { ParticleReactItem, ParticleReactItemPlus, ParticleDataRef } from '../../typings'
 
 export function isValidReactParticle(config: ParticleReactItem) {
 	if (config) {
@@ -14,7 +13,7 @@ export function isValidReactParticle(config: ParticleReactItem) {
 }
 
 export function controller(
-	configItem: ParticleReactItem,
+	configItem: ParticleReactItemPlus,
 	registeredCmptMap: ParticleDataRef['registeredCmptMap'],
 	particleDataRef: React.MutableRefObject<ParticleDataRef>,
 	options?: {
@@ -23,8 +22,8 @@ export function controller(
 	}
 ) {
 	const { order, replace } = options || {}
-	const { type, key, props = {}, __particle } = configItem
-	const { parent } = __particle
+	const { type, key, props = {}, __particle__ } = configItem
+	const { parent } = __particle__
 	/** 必须存在组件类型和注册信息 */
 	if (isValidReactParticle(configItem) && registeredCmptMap) {
 		let Component = registeredCmptMap[type]

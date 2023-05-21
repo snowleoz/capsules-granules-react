@@ -1,6 +1,5 @@
 import { useMemo, useReducer, createElement, ReactNode } from 'react'
-import { ParticleDataRef } from '../../'
-import { ReactElements, ParticleReactItem } from '../../../typings'
+import { ReactCreateElementReturn, ReactCmpt, ParticleReactItemPlus, ParticleDataRef } from '../../../typings'
 
 type IState = {
 	/** 当前组件的子级 */
@@ -13,13 +12,13 @@ type IPayload = Partial<IState>
 
 export interface IProps {
 	/** 当前配置 */
-	config: ParticleReactItem
+	config: ParticleReactItemPlus
 	/** 当前渲染的组件 */
-	render: ReactElements
+	render: ReactCmpt
 	/** 当前组件的属性 */
 	renderProps: Record<string, unknown>
 	/** 当前组件的子级 */
-	renderChildren?: ReactElements[]
+	renderChildren?: ReactCreateElementReturn[]
 	/** 更新器容器 */
 	reactUpdaters: ParticleDataRef['reactUpdaters']
 }
