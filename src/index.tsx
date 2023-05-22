@@ -1,16 +1,16 @@
-import React, { useMemo, Fragment, useState, forwardRef, useRef, Ref } from 'react'
+import React, { useMemo, Fragment, useState, forwardRef, useRef, Ref, useEffect } from 'react'
 import Particle, { PARTICLE_TOP } from 'capsule-particle'
 import { useImperative } from './hooks'
 import { initRegistry, controller } from './utils'
 import type { IParticleReactProps, ParticleReactItem, ParticleDataRef, ReactParticleRef } from '../typings'
 
 const ParticleReact = (props: IParticleReactProps, ref: Ref<ReactParticleRef>) => {
-	const { registry, feedback, configs } = props
+	const { registry, feedback, configs, callback, onLoaded } = props
 
 	/** 组件刷新器 */
 	const [updateCount, update] = useState(0)
 
-	/** 缓存数据 */
+	/** 缓存组件树数据 */
 	const particleDataRef = useRef<ParticleDataRef>({
 		/** 组件注册信息映射表 */
 		registeredMap: undefined,
@@ -25,7 +25,9 @@ const ParticleReact = (props: IParticleReactProps, ref: Ref<ReactParticleRef>) =
 		/** 每个树节点的children容器 */
 		reactTreeChildren: {},
 		/** 每个组件的更新器 */
-		reactUpdaters: {}
+		reactUpdaters: {},
+		/** 外部的callback */
+		callbackExternal: callback
 	})
 
 	/** 对外暴露实例方法 */
@@ -44,6 +46,7 @@ const ParticleReact = (props: IParticleReactProps, ref: Ref<ReactParticleRef>) =
 			 * */
 			const particleEntity = new Particle<ParticleReactItem>(configs, (configItem) => {
 				controller(configItem, registeredCmptMap, particleDataRef)
+				particleDataRef.current.callbackExternal && particleDataRef.current.callbackExternal(configItem)
 			})
 			particleDataRef.current = {
 				...particleDataRef.current,
@@ -64,6 +67,17 @@ const ParticleReact = (props: IParticleReactProps, ref: Ref<ReactParticleRef>) =
 			throw new Error('Missing valid component registration information')
 		}
 	}, [])
+
+	useEffect(() => {
+		/** 组件初始化渲染完成 */
+		if (updateCount === 1) {
+			onLoaded && onLoaded()
+		}
+	}, [updateCount, onLoaded])
+
+	useEffect(() => {
+		particleDataRef.current.callbackExternal = callback
+	}, [callback])
 
 	const ReactTree = useMemo(() => {
 		return particleDataRef.current.reactTree

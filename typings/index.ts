@@ -28,6 +28,8 @@ export type ParticleDataRef = {
 	} & {
 		[PARTICLE_TOP]?: () => void
 	}
+	/** 外部传入的回调函数 */
+	callbackExternal?: IParticleReactProps['callback']
 }
 
 export type ParticleReactVars = {
@@ -56,6 +58,10 @@ export interface IParticleReactProps {
 	registry: RegistryItem[]
 	/** 组件树加载时的渲染 */
 	feedback?: JSX.Element | string
+	/** 遍历配置项时，调用回调函数 */
+	callback?: (configItem: ParticleReactItemPlus) => void | false
+	/** 配置加载完成时 */
+	onLoaded?: () => void
 }
 
 /** React组件类型 */
