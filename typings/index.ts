@@ -1,5 +1,5 @@
 import { createElement, FunctionComponent, ComponentClass } from 'react'
-import Particle, { PARTICLE_TOP, FlatParticleTreeMap, Controller } from 'capsule-particle'
+import Particle, { PARTICLE_TOP, FlatParticleTreeMap, Controller, removeCallbackParams } from 'capsule-particle'
 import type { ParticleItem, ParticleItemPlus } from 'capsule-particle'
 
 export type ParticleDataRef = {
@@ -93,8 +93,8 @@ export type ReactParticleRef = {
 		options?: {
 			merge?: boolean
 		}
-	): void
-	remove(keys: string | string[]): void
+	): boolean
+	remove(keys: string | string[]): void | removeCallbackParams
 	append(
 		key: string,
 		data: ParticleReactItem,
@@ -102,8 +102,14 @@ export type ReactParticleRef = {
 			order?: number
 			controller?: Controller<ParticleReactItem>
 		}
-	): void
-	replace(key: string, data: ParticleReactItem): void
+	): ParticleItemPlus<ParticleReactItem> | void
+	replace(
+		key: string,
+		data: ParticleReactItem
+	): {
+		removeInfos: removeCallbackParams
+		appendInfos: ParticleItemPlus<ParticleReactItem>
+	} | void
 }
 
 declare const _default: React.ForwardRefExoticComponent<IParticleReactProps & React.RefAttributes<ReactParticleRef>>

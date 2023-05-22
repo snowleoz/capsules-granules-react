@@ -10,7 +10,7 @@ const useImperative = (
 	deps = []
 ) => {
 	const { particleEntity, reactUpdaters, reactTreeChildren, flatReactTree, registeredCmptMap } = particleDataRef.current
-	useImperativeHandle(
+	useImperativeHandle<ReactParticleRef, ReactParticleRef>(
 		ref,
 		() => {
 			return {
@@ -54,7 +54,9 @@ const useImperative = (
 								})
 							}
 						})
+						return true
 					}
+					return false
 				},
 				/** 移除指定的元素 */
 				remove(keys: string | string[]) {
@@ -62,7 +64,7 @@ const useImperative = (
 					const waitToFilterChildren: ReactCreateElementReturn[][] = []
 					const waitToUpdateKeys: string[] = []
 					let updateRoot = false
-					particleEntity!.remove(keys, (removeInfo) => {
+					const removeInfos = particleEntity!.remove(keys, (removeInfo) => {
 						forEach(removeInfo, (removeItem) => {
 							const { key, parent, children, index } = removeItem
 							const removeKeys = children.concat([key])
@@ -101,6 +103,7 @@ const useImperative = (
 							})
 						}
 					}
+					return removeInfos
 				},
 				/** 增加元素到指定节点 */
 				append(
@@ -130,10 +133,12 @@ const useImperative = (
 									children: newChildren?.slice(0) || []
 								})
 							}
+							return appendResult
 						}
 					} else {
 						console.error('Missing valid key or type, please check. data is ', JSON.stringify(data))
 					}
+					return
 				},
 				/** 替换指定的元素 */
 				replace(key: string, data: ParticleReactItem) {
@@ -170,8 +175,10 @@ const useImperative = (
 									delete reactUpdaters[removeKey]
 								})
 							})
+							return replaceResult
 						}
 					}
+					return
 				}
 			}
 		},
