@@ -13,9 +13,9 @@ const ParticleReact = (props: IParticleReactProps, ref: Ref<ReactParticleRef>) =
 	/** 缓存组件树数据 */
 	const particleDataRef = useRef<ParticleDataRef>({
 		/** 组件注册信息映射表 */
-		registeredMap: undefined,
+		registeredMap: {},
 		/** 组件注册表 */
-		registeredCmptMap: undefined,
+		registeredCmptMap: {},
 		/** 对象树实例 */
 		particleEntity: undefined,
 		/** 当前的组件树 */
@@ -39,6 +39,10 @@ const ParticleReact = (props: IParticleReactProps, ref: Ref<ReactParticleRef>) =
 	 */
 	useMemo(() => {
 		const registryInfo = initRegistry(registry)
+		/**
+		 * 没有注册组件，跳过渲染
+		 * todo 组件信息可在配置中声明，不一定需要注册才可使用
+		 */
 		if (registryInfo) {
 			const { registeredMap, registeredCmptMap } = registryInfo
 			/**

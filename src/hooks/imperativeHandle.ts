@@ -1,8 +1,14 @@
 import { useImperativeHandle, Ref } from 'react'
 import { forEach } from 'lodash-es'
 import { PARTICLE_TOP, Controller, ParticleItemPlus } from 'capsule-particle'
-import type { ParticleReactItem, ReactCreateElementReturn, ReactParticleRef, ParticleDataRef } from '../../typings'
-import { isValidReactParticle, controller } from '../utils'
+import type {
+	ParticleReactItem,
+	ReactCreateElementReturn,
+	ReactParticleRef,
+	ParticleDataRef,
+	RegistryItem
+} from '../../typings'
+import { isValidReactParticle, controller, checkRegistry } from '../utils'
 
 const useImperative = (
 	ref: Ref<ReactParticleRef>,
@@ -184,6 +190,37 @@ const useImperative = (
 				/** 获取已注册的组件信息 */
 				getRegistered() {
 					return registeredMap
+				},
+				registerComponent(registerData: RegistryItem | RegistryItem[]) {
+					if (!registerData) {
+						console.error('Missing valid registration information')
+						return
+					}
+					if (Array.isArray(registerData)) {
+						forEach(registerData, (registerItem) => {
+							if (checkRegistry(registerItem)) {
+								const { type, component } = registerItem
+								registeredMap[type] = registerItem
+								registeredCmptMap[type] = component
+							} else {
+								console.error(
+									'The registration information is incorrect, please check. Error resigter info is ',
+									JSON.stringify(registerItem)
+								)
+							}
+						})
+					} else {
+						if (checkRegistry(registerData)) {
+							const { type, component } = registerData
+							registeredMap[type] = registerData
+							registeredCmptMap[type] = component
+						} else {
+							console.error(
+								'The registration information is incorrect, please check. Error resigter info is ',
+								JSON.stringify(registerData)
+							)
+						}
+					}
 				}
 			}
 		},

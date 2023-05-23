@@ -4,9 +4,9 @@ import type { ParticleItem, ParticleItemPlus } from 'capsule-particle'
 
 export type ParticleDataRef = {
 	/** 组件注册信息映射表 */
-	registeredMap?: Record<string, RegistryItem>
+	registeredMap: Record<string, RegistryItem>
 	/** 组件注册表 */
-	registeredCmptMap?: Record<string, RegistryItem['component']>
+	registeredCmptMap: Record<string, RegistryItem['component']>
 	/** 对象树实例 */
 	particleEntity?: Particle<ParticleReactItem>
 	/** 当前的组件树 */
@@ -111,6 +111,7 @@ export type ReactParticleRef = {
 		appendInfos: ParticleItemPlus<ParticleReactItem>
 	} | void
 	getRegistered(): ParticleDataRef['registeredMap']
+	registerComponent(registerData: RegistryItem | RegistryItem[]): void
 }
 
 declare const _default: React.ForwardRefExoticComponent<IParticleReactProps & React.RefAttributes<ReactParticleRef>>
