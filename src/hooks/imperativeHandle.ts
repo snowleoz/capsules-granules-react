@@ -9,7 +9,8 @@ const useImperative = (
 	particleDataRef: React.MutableRefObject<ParticleDataRef>,
 	deps = []
 ) => {
-	const { particleEntity, reactUpdaters, reactTreeChildren, flatReactTree, registeredCmptMap } = particleDataRef.current
+	const { particleEntity, reactUpdaters, reactTreeChildren, flatReactTree, registeredMap, registeredCmptMap } =
+		particleDataRef.current
 	useImperativeHandle<ReactParticleRef, ReactParticleRef>(
 		ref,
 		() => {
@@ -179,6 +180,10 @@ const useImperative = (
 						}
 					}
 					return
+				},
+				/** 获取已注册的组件信息 */
+				getRegistered() {
+					return registeredMap
 				}
 			}
 		},

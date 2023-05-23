@@ -87,3 +87,4 @@ const ParticleReact = (props: IParticleReactProps, ref: Ref<ReactParticleRef>) =
 }
 
 export default forwardRef(ParticleReact)
+export { ReactParticleRef }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { createRoot } from 'react-dom/client'
 import { description } from './data'
 
-import ParticleReact, { ReactParticleRef } from '../dist'
+import ParticleReact, { ReactParticleRef } from '../src'
 
 const registry = [
 	{
@@ -14,7 +14,8 @@ const registry = [
 const App = () => {
 	const particleReactRef = useRef<ReactParticleRef>(null)
 	useEffect(() => {
-		console.log('particleReactRef: ', particleReactRef)
+		const particleConfig = particleReactRef.current?.getItem()
+		console.log('particleConfig: ', particleConfig)
 	}, [])
 	return (
 		<div>

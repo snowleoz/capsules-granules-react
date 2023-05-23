@@ -110,6 +110,7 @@ export type ReactParticleRef = {
 		removeInfos: removeCallbackParams
 		appendInfos: ParticleItemPlus<ParticleReactItem>
 	} | void
+	getRegistered(): ParticleDataRef['registeredMap']
 }
 
 declare const _default: React.ForwardRefExoticComponent<IParticleReactProps & React.RefAttributes<ReactParticleRef>>
