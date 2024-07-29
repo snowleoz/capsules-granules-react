@@ -1,9 +1,9 @@
 {
   "name": "capsule-particle-react",
   "version": "1.0.2",
-  "description": "$description$",
+  "description": "React generator by config",
   "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "type": "module",
   "types": "./dist/index.d.ts",
   "repository": "https://github.com/zhangrui0517/capsule-particle-react.git",
   "scripts": {
@@ -12,7 +12,7 @@
     "lint:script": "eslint --ext .js,.jsx,.ts,.tsx --fix --quiet ./",
     "build": "vite build && pnpm buildType",
     "dev": "vite -c ./vite.test.ts",
-		"buildType": "tsc ./typings/index.ts --declaration --emitDeclarationOnly --declarationDir ./dist --target ES2015 --moduleResolution node"
+    "buildType": "tsc ./typings/index.ts --declaration --emitDeclarationOnly --declarationDir ./dist --target ES2015 --moduleResolution node"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts}": [
@@ -20,12 +20,11 @@
     ]
   },
   "keywords": [],
-  "author": "zhangrui0517",
+  "author": "zhangrui",
   "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "^17.5.1",
     "@commitlint/config-conventional": "^17.4.4",
-    "@types/lodash-es": "^4.17.7",
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
@@ -37,7 +36,6 @@
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
-    "lodash-es": "^4.17.21",
     "prettier": "^2.8.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -45,11 +43,10 @@
     "vite": "^4.2.1"
   },
   "peerDependencies": {
-    "lodash-es": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "capsule-particle": "^1.0.39"
+    "capsule-particle": "^1.0.44"
   }
 }
