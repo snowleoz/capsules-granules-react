@@ -67,9 +67,6 @@ export const useConfig = (props: IParticleProps) => {
 			}
 			return
 		})
-		if (particleRef) {
-			particleRef.current = apiRef.current
-		}
 		cacheDataRef.current.forceRender = forceRender
 	}, [forceRender, config, registry, configCallback])
 
@@ -81,6 +78,10 @@ export const useConfig = (props: IParticleProps) => {
 		registry,
 		forceUpdate
 	})
+
+	if (particleRef) {
+		particleRef.current = apiRef.current
+	}
 
 	return {
 		ReactTree,

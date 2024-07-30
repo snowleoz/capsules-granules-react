@@ -159,6 +159,9 @@ export function useApi(props: {
 		get(name?: string) {
 			return innerParticleRef.current?.get(name)
 		},
+		getParticle() {
+			return innerParticleRef.current!.getParticles()
+		},
 		registry(registryInfos: IParticleProps['registry']) {
 			Object.assign(registry, registryInfos)
 		}

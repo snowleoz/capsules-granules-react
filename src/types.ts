@@ -1,5 +1,11 @@
 import { ComponentType, MutableRefObject } from 'react'
-import type { ParamDataItem, ParseDataToParticleCallback, ParticleDataItem, RemoveCallback } from 'capsule-particle'
+import type {
+	ParamDataItem,
+	ParseDataToParticleCallback,
+	ParticleDataItem,
+	RemoveCallback,
+	ParticleData
+} from 'capsule-particle'
 
 export type ParticleApi = {
 	get(
@@ -27,6 +33,7 @@ export type ParticleApi = {
 		}
 	): void
 	registry(registryInfos: IParticleProps['registry']): void
+	getParticle(): ParticleData<ParticleConfigItem>
 }
 
 export type ParticleConfigItem = ParamDataItem & {

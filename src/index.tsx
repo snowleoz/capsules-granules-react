@@ -1,9 +1,9 @@
 import { useConfig } from './hook'
 import type { IParticleProps } from './types'
+export type * from './types'
 
 function ParticleReact(props: IParticleProps) {
-	const { ReactTree, apiRef } = useConfig(props)
-	console.log('#1 apiRef: ', apiRef)
+	const { ReactTree } = useConfig(props)
 	return ReactTree.current
 }
 
