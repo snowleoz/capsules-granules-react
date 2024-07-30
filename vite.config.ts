@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import reactPlugin from '@vitejs/plugin-react'
 
 export default defineConfig({
+	mode: 'production',
 	plugins: [reactPlugin()],
 	build: {
 		target: ['es2015'],
@@ -12,10 +13,9 @@ export default defineConfig({
 			fileName: 'index'
 		},
 		rollupOptions: {
-			external: ['lodash-es', 'react', 'react-dom'],
+			external: ['capsule-particle', 'react', 'react-dom'],
 			output: {
 				globals: {
-					'lodash-es': '_',
 					react: 'react',
 					'react-dom': 'reactDom'
 				}

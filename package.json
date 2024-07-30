@@ -4,7 +4,7 @@
   "description": "React generator by config",
   "main": "./dist/index.js",
   "type": "module",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/types.d.ts",
   "repository": "https://github.com/zhangrui0517/capsule-particle-react.git",
   "scripts": {
     "prepublish": "pnpm build",
@@ -12,7 +12,7 @@
     "lint:script": "eslint --ext .js,.jsx,.ts,.tsx --fix --quiet ./",
     "build": "vite build && pnpm buildType",
     "dev": "vite -c ./vite.test.ts",
-    "buildType": "tsc ./typings/index.ts --declaration --emitDeclarationOnly --declarationDir ./dist --target ES2015 --moduleResolution node"
+    "buildType": "tsc ./src/types.ts --declaration --emitDeclarationOnly --declarationDir ./dist --target ES2015 --moduleResolution node"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts}": [
