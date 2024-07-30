@@ -48,6 +48,6 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "capsule-particle": "^1.0.44"
+    "capsule-particle": "^1.0.46"
   }
 }

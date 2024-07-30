@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       capsule-particle:
-        specifier: ^1.0.44
-        version: 1.0.44
+        specifier: ^1.0.46
+        version: 1.0.46
     devDependencies:
       '@commitlint/cli':
         specifier: ^17.5.1
@@ -652,8 +652,8 @@ packages:
   caniuse-lite@1.0.30001639:
     resolution: {integrity: sha512-eFHflNTBIlFwP2AIKaYuBQN/apnUoKNhBdza8ZnW/h2di4LCZ4xFqYlxUxo+LQ76KFI1PGcC1QDxMbxTZpSCAg==}
 
-  capsule-particle@1.0.44:
-    resolution: {integrity: sha512-tuohzg97mxBYwXJq+Db10FGg6HlzJlIKynqHCgKNx94dUe5YyPhd114HHz/r1YLZj1+kaJWCDtjlUa5YZ1wUQQ==}
+  capsule-particle@1.0.46:
+    resolution: {integrity: sha512-M7s5WM3QgDaJ4Vz564LPOMXOYfJ1AajAQ1kidgj+95IHJ9U7HkECkvoU9ecjy3PljwSytbrA1zhwglcZaqQDdQ==}
 
   chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -2462,7 +2462,7 @@ snapshots:
 
   caniuse-lite@1.0.30001639: {}
 
-  capsule-particle@1.0.44: {}
+  capsule-particle@1.0.46: {}
 
   chalk@2.4.2:
     dependencies:
