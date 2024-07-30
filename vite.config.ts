@@ -5,6 +5,7 @@ export default defineConfig({
 	mode: 'production',
 	plugins: [reactPlugin()],
 	build: {
+		minify: 'terser',
 		target: ['es2015'],
 		lib: {
 			entry: './src/index.tsx',
