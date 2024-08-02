@@ -1,14 +1,8 @@
-import { useRef, useMemo, createElement, ReactNode, FunctionComponentElement } from 'react'
+import { useRef, useMemo, createElement } from 'react'
 import { Particle } from 'capsule-particle'
-import ConfigRender, { IProps as IConfigRenderProps, dispatchItem } from '../components/ConfigRender'
+import ConfigRender, { dispatchItem } from '../components/ConfigRender'
 import { useForceUpdate, useApi } from './'
-import type { IParticleProps, ParticleConfigItem } from '../types'
-
-export type ReactTreeType = Array<FunctionComponentElement<IConfigRenderProps>>
-
-export type ReactChildrenType = {
-	[parentName: string]: Array<ReactNode>
-}
+import type { IParticleProps, ParticleConfigItem, ReactTreeType, ReactChildrenType } from '../types'
 
 export const useConfig = (props: IParticleProps) => {
 	const { config, registry, forceRender = 0, particleRef, configCallback } = props

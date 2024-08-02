@@ -1,4 +1,4 @@
-import { ComponentType, MutableRefObject } from 'react'
+import type { ComponentType, MutableRefObject, ReactNode, FunctionComponentElement } from 'react'
 import type {
 	ParamDataItem,
 	ParseDataToParticleCallback,
@@ -68,3 +68,12 @@ export interface IParticleProps {
 		}
 	}
 }
+
+export type ReactTreeType = Array<FunctionComponentElement<IParticleProps>>
+
+export type ReactChildrenType = {
+	[parentName: string]: Array<ReactNode>
+}
+
+declare function ParticleReact(props: IParticleProps): ReactTreeType
+export default ParticleReact
