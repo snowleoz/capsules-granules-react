@@ -1,11 +1,11 @@
 import { createElement, useRef } from 'react'
 import type { Particle, RemoveCallback, ParseDataToParticleCallback } from 'capsule-particle'
 import type { ParticleApi, ParticleConfigItem, ParticleConfigs, IParticleProps } from '../types'
-import type { ReactTreeType, ReactChildrenType } from './'
-import ConfigRender, { dispatchItem } from '../components/ConfigRender'
+import type { ReactTreeType, ReactChildrenType } from '../types'
+import ConfigRender, { dispatchItem, IProps as IConfigRenderProps } from '../components/ConfigRender'
 
 export function useApi(props: {
-	ReactTree: React.MutableRefObject<ReactTreeType>
+	ReactTree: React.MutableRefObject<ReactTreeType<IConfigRenderProps>>
 	reactChildren: React.MutableRefObject<ReactChildrenType>
 	reactDispatch: React.MutableRefObject<dispatchItem>
 	innerParticleRef: React.MutableRefObject<Particle<Array<ParticleConfigItem>> | undefined>

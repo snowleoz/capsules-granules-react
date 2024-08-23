@@ -1,6 +1,6 @@
 import { useRef, useMemo, createElement } from 'react'
 import { Particle } from 'capsule-particle'
-import ConfigRender, { dispatchItem } from '../components/ConfigRender'
+import ConfigRender, { dispatchItem, IProps as IConfigRenderProps } from '../components/ConfigRender'
 import { useForceUpdate, useApi } from './'
 import type { IParticleProps, ParticleConfigItem, ReactTreeType, ReactChildrenType } from '../types'
 
@@ -10,7 +10,7 @@ export const useConfig = (props: IParticleProps) => {
 	const { forceUpdate } = useForceUpdate()
 
 	/** React 组件树 */
-	const ReactTree = useRef<ReactTreeType>([])
+	const ReactTree = useRef<ReactTreeType<IConfigRenderProps>>([])
 
 	/** React 子级引用 */
 	const reactChildren = useRef<ReactChildrenType>({})
@@ -46,7 +46,8 @@ export const useConfig = (props: IParticleProps) => {
 						config: configItem,
 						registry,
 						children: reactChildren.current[name],
-						dispatchRef: reactDispatch
+						dispatchRef: reactDispatch,
+						key: `${name}-render`
 					})
 				)
 			} else {
@@ -55,7 +56,8 @@ export const useConfig = (props: IParticleProps) => {
 						config: configItem,
 						registry,
 						children: reactChildren.current[name],
-						dispatchRef: reactDispatch
+						dispatchRef: reactDispatch,
+						key: `${name}-render`
 					})
 				)
 			}

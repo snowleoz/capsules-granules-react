@@ -38,7 +38,7 @@ export type ParticleApi = {
 
 export type ParticleConfigItem = ParamDataItem & {
 	/** 组件名称 */
-	componentName: string
+	componentName?: string
 	/** 组件配置 */
 	props?: Record<string, unknown>
 	/** 子级配置 */
@@ -63,13 +63,14 @@ export interface IParticleProps {
 	/** 组件注册列表 */
 	registry: {
 		[name: string]: {
-			component: ComponentType
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			component: ComponentType<any> | string
 			[extra: string]: unknown
 		}
 	}
 }
 
-export type ReactTreeType = Array<FunctionComponentElement<IParticleProps>>
+export type ReactTreeType<T = Record<string, unknown>> = Array<FunctionComponentElement<IParticleProps & T>>
 
 export type ReactChildrenType = {
 	[parentName: string]: Array<ReactNode>

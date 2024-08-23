@@ -65,7 +65,7 @@ function ConfigRender(props: IProps) {
 
 	const CurrentComponent = useMemo(() => {
 		const { componentName } = config
-		const registryComponent = registry[componentName]?.component
+		const registryComponent = componentName && registry[componentName]?.component
 		if (!registryComponent) {
 			console.error(
 				'The corresponding control cannot be found. The current registration list is: ',
